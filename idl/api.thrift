@@ -28,6 +28,7 @@ service SignLotteryApi{
     sign.BaseResponse Sign(1:sign.SignRequest req)(api.post="/sign/add/")
     sign.BaseResponse AskLeave(1:sign.AskLeaveRequest req)(api.post="/sign/leave/")
     sign.MonthSignResponse GetMonthSign(1:sign.GetMonthSignRequest req)(api.get="/sign/month/")
+    sign.MonthSignsResponse GetMonthSignByGid(1:sign.GetMonthSignsByGid req)(api.get="/sign/gmonth")
     sign.RecordsResponse GetAllRecord(1:sign.GetAllRecordRequest req)(api.get="/sign/recordlist/")
     sign.RecordsResponse GetUserRecord(1:sign.GetUserRecordRequest req)(api.get="/sign/record/")
     sign.BaseResponse SignPosAdd(1:sign.SignPosAddRequest req)(api.post="/sign/pos/")

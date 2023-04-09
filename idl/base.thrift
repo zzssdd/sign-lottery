@@ -64,8 +64,8 @@ struct UsersResponse{
 
 
 struct GetAllUserRequest{
-    1:required i64 offset
-    2:required i64 limit
+    1:required i32 offset
+    2:required i32 limit
 }
 
 struct AdminLoginRequest{
@@ -95,13 +95,13 @@ struct JoinGroupRequest{
 
 struct GetUserByGidRequest{
     1:required i32 gid
-    2:required i64 offset
-    3:required i64 limit
+    2:required i32 offset
+    3:required i32 limit
 }
 
 struct GetAllGroupRequest{
-    1:required i64 offset
-    2:required i64 limit
+    1:required i32 offset
+    2:required i32 limit
 }
 
 struct GroupsResponse{

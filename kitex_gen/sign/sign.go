@@ -1090,8 +1090,9 @@ func (p *AskLeaveRequest) Field4DeepEqual(src string) bool {
 }
 
 type GetMonthSignRequest struct {
-	Uid *int64 `thrift:"uid,1,optional" frugal:"1,optional,i64" json:"uid,omitempty"`
-	Gid int32  `thrift:"gid,2,required" frugal:"2,required,i32" json:"gid"`
+	Uid   *int64 `thrift:"uid,1,optional" frugal:"1,optional,i64" json:"uid,omitempty"`
+	Gid   int32  `thrift:"gid,2,required" frugal:"2,required,i32" json:"gid"`
+	Month string `thrift:"month,3,required" frugal:"3,required,string" json:"month"`
 }
 
 func NewGetMonthSignRequest() *GetMonthSignRequest {
@@ -1114,16 +1115,24 @@ func (p *GetMonthSignRequest) GetUid() (v int64) {
 func (p *GetMonthSignRequest) GetGid() (v int32) {
 	return p.Gid
 }
+
+func (p *GetMonthSignRequest) GetMonth() (v string) {
+	return p.Month
+}
 func (p *GetMonthSignRequest) SetUid(val *int64) {
 	p.Uid = val
 }
 func (p *GetMonthSignRequest) SetGid(val int32) {
 	p.Gid = val
 }
+func (p *GetMonthSignRequest) SetMonth(val string) {
+	p.Month = val
+}
 
 var fieldIDToName_GetMonthSignRequest = map[int16]string{
 	1: "uid",
 	2: "gid",
+	3: "month",
 }
 
 func (p *GetMonthSignRequest) IsSetUid() bool {
@@ -1135,6 +1144,7 @@ func (p *GetMonthSignRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetGid bool = false
+	var issetMonth bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -1171,6 +1181,17 @@ func (p *GetMonthSignRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 3:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetMonth = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -1187,6 +1208,11 @@ func (p *GetMonthSignRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetGid {
 		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetMonth {
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -1225,6 +1251,15 @@ func (p *GetMonthSignRequest) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *GetMonthSignRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Month = v
+	}
+	return nil
+}
+
 func (p *GetMonthSignRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("GetMonthSignRequest"); err != nil {
@@ -1237,6 +1272,10 @@ func (p *GetMonthSignRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -1294,6 +1333,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
+func (p *GetMonthSignRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("month", thrift.STRING, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Month); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
 func (p *GetMonthSignRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1311,6 +1367,9 @@ func (p *GetMonthSignRequest) DeepEqual(ano *GetMonthSignRequest) bool {
 		return false
 	}
 	if !p.Field2DeepEqual(ano.Gid) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.Month) {
 		return false
 	}
 	return true
@@ -1335,10 +1394,17 @@ func (p *GetMonthSignRequest) Field2DeepEqual(src int32) bool {
 	}
 	return true
 }
+func (p *GetMonthSignRequest) Field3DeepEqual(src string) bool {
+
+	if strings.Compare(p.Month, src) != 0 {
+		return false
+	}
+	return true
+}
 
 type MonthSignResponse struct {
 	Resp   *BaseResponse `thrift:"resp,1,required" frugal:"1,required,BaseResponse" json:"resp"`
-	Bitmap int64         `thrift:"bitmap,2,required" frugal:"2,required,i64" json:"bitmap"`
+	Bitmap int32         `thrift:"bitmap,2,required" frugal:"2,required,i32" json:"bitmap"`
 }
 
 func NewMonthSignResponse() *MonthSignResponse {
@@ -1358,13 +1424,13 @@ func (p *MonthSignResponse) GetResp() (v *BaseResponse) {
 	return p.Resp
 }
 
-func (p *MonthSignResponse) GetBitmap() (v int64) {
+func (p *MonthSignResponse) GetBitmap() (v int32) {
 	return p.Bitmap
 }
 func (p *MonthSignResponse) SetResp(val *BaseResponse) {
 	p.Resp = val
 }
-func (p *MonthSignResponse) SetBitmap(val int64) {
+func (p *MonthSignResponse) SetBitmap(val int32) {
 	p.Bitmap = val
 }
 
@@ -1410,7 +1476,7 @@ func (p *MonthSignResponse) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1470,7 +1536,7 @@ func (p *MonthSignResponse) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *MonthSignResponse) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Bitmap = v
@@ -1529,10 +1595,10 @@ WriteFieldEndError:
 }
 
 func (p *MonthSignResponse) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("bitmap", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("bitmap", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Bitmap); err != nil {
+	if err := oprot.WriteI32(p.Bitmap); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1574,7 +1640,7 @@ func (p *MonthSignResponse) Field1DeepEqual(src *BaseResponse) bool {
 	}
 	return true
 }
-func (p *MonthSignResponse) Field2DeepEqual(src int64) bool {
+func (p *MonthSignResponse) Field2DeepEqual(src int32) bool {
 
 	if p.Bitmap != src {
 		return false
@@ -1582,9 +1648,718 @@ func (p *MonthSignResponse) Field2DeepEqual(src int64) bool {
 	return true
 }
 
+type GetMonthSignsByGid struct {
+	Gid    int32  `thrift:"gid,1,required" frugal:"1,required,i32" json:"gid"`
+	Month  string `thrift:"month,2,required" frugal:"2,required,string" json:"month"`
+	Offset int32  `thrift:"offset,3,required" frugal:"3,required,i32" json:"offset"`
+	Limit  int32  `thrift:"limit,4,required" frugal:"4,required,i32" json:"limit"`
+}
+
+func NewGetMonthSignsByGid() *GetMonthSignsByGid {
+	return &GetMonthSignsByGid{}
+}
+
+func (p *GetMonthSignsByGid) InitDefault() {
+	*p = GetMonthSignsByGid{}
+}
+
+func (p *GetMonthSignsByGid) GetGid() (v int32) {
+	return p.Gid
+}
+
+func (p *GetMonthSignsByGid) GetMonth() (v string) {
+	return p.Month
+}
+
+func (p *GetMonthSignsByGid) GetOffset() (v int32) {
+	return p.Offset
+}
+
+func (p *GetMonthSignsByGid) GetLimit() (v int32) {
+	return p.Limit
+}
+func (p *GetMonthSignsByGid) SetGid(val int32) {
+	p.Gid = val
+}
+func (p *GetMonthSignsByGid) SetMonth(val string) {
+	p.Month = val
+}
+func (p *GetMonthSignsByGid) SetOffset(val int32) {
+	p.Offset = val
+}
+func (p *GetMonthSignsByGid) SetLimit(val int32) {
+	p.Limit = val
+}
+
+var fieldIDToName_GetMonthSignsByGid = map[int16]string{
+	1: "gid",
+	2: "month",
+	3: "offset",
+	4: "limit",
+}
+
+func (p *GetMonthSignsByGid) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetGid bool = false
+	var issetMonth bool = false
+	var issetOffset bool = false
+	var issetLimit bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetGid = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetMonth = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetOffset = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField4(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetLimit = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetGid {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetMonth {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetOffset {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetLimit {
+		fieldId = 4
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetMonthSignsByGid[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_GetMonthSignsByGid[fieldId]))
+}
+
+func (p *GetMonthSignsByGid) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		p.Gid = v
+	}
+	return nil
+}
+
+func (p *GetMonthSignsByGid) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Month = v
+	}
+	return nil
+}
+
+func (p *GetMonthSignsByGid) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		p.Offset = v
+	}
+	return nil
+}
+
+func (p *GetMonthSignsByGid) ReadField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		p.Limit = v
+	}
+	return nil
+}
+
+func (p *GetMonthSignsByGid) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetMonthSignsByGid"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+		if err = p.writeField4(oprot); err != nil {
+			fieldId = 4
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetMonthSignsByGid) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("gid", thrift.I32, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(p.Gid); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetMonthSignsByGid) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("month", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Month); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *GetMonthSignsByGid) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("offset", thrift.I32, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(p.Offset); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *GetMonthSignsByGid) writeField4(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 4); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(p.Limit); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
+func (p *GetMonthSignsByGid) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetMonthSignsByGid(%+v)", *p)
+}
+
+func (p *GetMonthSignsByGid) DeepEqual(ano *GetMonthSignsByGid) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Gid) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.Month) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.Offset) {
+		return false
+	}
+	if !p.Field4DeepEqual(ano.Limit) {
+		return false
+	}
+	return true
+}
+
+func (p *GetMonthSignsByGid) Field1DeepEqual(src int32) bool {
+
+	if p.Gid != src {
+		return false
+	}
+	return true
+}
+func (p *GetMonthSignsByGid) Field2DeepEqual(src string) bool {
+
+	if strings.Compare(p.Month, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *GetMonthSignsByGid) Field3DeepEqual(src int32) bool {
+
+	if p.Offset != src {
+		return false
+	}
+	return true
+}
+func (p *GetMonthSignsByGid) Field4DeepEqual(src int32) bool {
+
+	if p.Limit != src {
+		return false
+	}
+	return true
+}
+
+type MonthSignsResponse struct {
+	Resp   *BaseResponse `thrift:"resp,1,required" frugal:"1,required,BaseResponse" json:"resp"`
+	Bitmap []int32       `thrift:"bitmap,2,required" frugal:"2,required,list<i32>" json:"bitmap"`
+	Count  int64         `thrift:"count,3,required" frugal:"3,required,i64" json:"count"`
+}
+
+func NewMonthSignsResponse() *MonthSignsResponse {
+	return &MonthSignsResponse{}
+}
+
+func (p *MonthSignsResponse) InitDefault() {
+	*p = MonthSignsResponse{}
+}
+
+var MonthSignsResponse_Resp_DEFAULT *BaseResponse
+
+func (p *MonthSignsResponse) GetResp() (v *BaseResponse) {
+	if !p.IsSetResp() {
+		return MonthSignsResponse_Resp_DEFAULT
+	}
+	return p.Resp
+}
+
+func (p *MonthSignsResponse) GetBitmap() (v []int32) {
+	return p.Bitmap
+}
+
+func (p *MonthSignsResponse) GetCount() (v int64) {
+	return p.Count
+}
+func (p *MonthSignsResponse) SetResp(val *BaseResponse) {
+	p.Resp = val
+}
+func (p *MonthSignsResponse) SetBitmap(val []int32) {
+	p.Bitmap = val
+}
+func (p *MonthSignsResponse) SetCount(val int64) {
+	p.Count = val
+}
+
+var fieldIDToName_MonthSignsResponse = map[int16]string{
+	1: "resp",
+	2: "bitmap",
+	3: "count",
+}
+
+func (p *MonthSignsResponse) IsSetResp() bool {
+	return p.Resp != nil
+}
+
+func (p *MonthSignsResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetResp bool = false
+	var issetBitmap bool = false
+	var issetCount bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetResp = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetBitmap = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetCount = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetResp {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetBitmap {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetCount {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MonthSignsResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_MonthSignsResponse[fieldId]))
+}
+
+func (p *MonthSignsResponse) ReadField1(iprot thrift.TProtocol) error {
+	p.Resp = NewBaseResponse()
+	if err := p.Resp.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *MonthSignsResponse) ReadField2(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.Bitmap = make([]int32, 0, size)
+	for i := 0; i < size; i++ {
+		var _elem int32
+		if v, err := iprot.ReadI32(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		p.Bitmap = append(p.Bitmap, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *MonthSignsResponse) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.Count = v
+	}
+	return nil
+}
+
+func (p *MonthSignsResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("MonthSignsResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *MonthSignsResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("resp", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Resp.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *MonthSignsResponse) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("bitmap", thrift.LIST, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.I32, len(p.Bitmap)); err != nil {
+		return err
+	}
+	for _, v := range p.Bitmap {
+		if err := oprot.WriteI32(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *MonthSignsResponse) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("count", thrift.I64, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Count); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *MonthSignsResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("MonthSignsResponse(%+v)", *p)
+}
+
+func (p *MonthSignsResponse) DeepEqual(ano *MonthSignsResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Resp) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.Bitmap) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.Count) {
+		return false
+	}
+	return true
+}
+
+func (p *MonthSignsResponse) Field1DeepEqual(src *BaseResponse) bool {
+
+	if !p.Resp.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+func (p *MonthSignsResponse) Field2DeepEqual(src []int32) bool {
+
+	if len(p.Bitmap) != len(src) {
+		return false
+	}
+	for i, v := range p.Bitmap {
+		_src := src[i]
+		if v != _src {
+			return false
+		}
+	}
+	return true
+}
+func (p *MonthSignsResponse) Field3DeepEqual(src int64) bool {
+
+	if p.Count != src {
+		return false
+	}
+	return true
+}
+
 type GetAllRecordRequest struct {
-	Offset int64 `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
-	Limit  int64 `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
+	Offset int32 `thrift:"offset,1,required" frugal:"1,required,i32" json:"offset"`
+	Limit  int32 `thrift:"limit,2,required" frugal:"2,required,i32" json:"limit"`
 }
 
 func NewGetAllRecordRequest() *GetAllRecordRequest {
@@ -1595,17 +2370,17 @@ func (p *GetAllRecordRequest) InitDefault() {
 	*p = GetAllRecordRequest{}
 }
 
-func (p *GetAllRecordRequest) GetOffset() (v int64) {
+func (p *GetAllRecordRequest) GetOffset() (v int32) {
 	return p.Offset
 }
 
-func (p *GetAllRecordRequest) GetLimit() (v int64) {
+func (p *GetAllRecordRequest) GetLimit() (v int32) {
 	return p.Limit
 }
-func (p *GetAllRecordRequest) SetOffset(val int64) {
+func (p *GetAllRecordRequest) SetOffset(val int32) {
 	p.Offset = val
 }
-func (p *GetAllRecordRequest) SetLimit(val int64) {
+func (p *GetAllRecordRequest) SetLimit(val int32) {
 	p.Limit = val
 }
 
@@ -1636,7 +2411,7 @@ func (p *GetAllRecordRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1647,7 +2422,7 @@ func (p *GetAllRecordRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1699,7 +2474,7 @@ RequiredFieldNotSetError:
 }
 
 func (p *GetAllRecordRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Offset = v
@@ -1708,7 +2483,7 @@ func (p *GetAllRecordRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *GetAllRecordRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -1750,10 +2525,10 @@ WriteStructEndError:
 }
 
 func (p *GetAllRecordRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("offset", thrift.I32, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Offset); err != nil {
+	if err := oprot.WriteI32(p.Offset); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1767,10 +2542,10 @@ WriteFieldEndError:
 }
 
 func (p *GetAllRecordRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Limit); err != nil {
+	if err := oprot.WriteI32(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1805,14 +2580,14 @@ func (p *GetAllRecordRequest) DeepEqual(ano *GetAllRecordRequest) bool {
 	return true
 }
 
-func (p *GetAllRecordRequest) Field1DeepEqual(src int64) bool {
+func (p *GetAllRecordRequest) Field1DeepEqual(src int32) bool {
 
 	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *GetAllRecordRequest) Field2DeepEqual(src int64) bool {
+func (p *GetAllRecordRequest) Field2DeepEqual(src int32) bool {
 
 	if p.Limit != src {
 		return false
@@ -2463,8 +3238,8 @@ func (p *RecordsResponse) Field3DeepEqual(src []*Record) bool {
 
 type GetUserRecordRequest struct {
 	Uid    *int64 `thrift:"uid,1,optional" frugal:"1,optional,i64" json:"uid,omitempty"`
-	Offset int64  `thrift:"offset,2,required" frugal:"2,required,i64" json:"offset"`
-	Limit  int64  `thrift:"limit,3,required" frugal:"3,required,i64" json:"limit"`
+	Offset int32  `thrift:"offset,2,required" frugal:"2,required,i32" json:"offset"`
+	Limit  int32  `thrift:"limit,3,required" frugal:"3,required,i32" json:"limit"`
 }
 
 func NewGetUserRecordRequest() *GetUserRecordRequest {
@@ -2484,20 +3259,20 @@ func (p *GetUserRecordRequest) GetUid() (v int64) {
 	return *p.Uid
 }
 
-func (p *GetUserRecordRequest) GetOffset() (v int64) {
+func (p *GetUserRecordRequest) GetOffset() (v int32) {
 	return p.Offset
 }
 
-func (p *GetUserRecordRequest) GetLimit() (v int64) {
+func (p *GetUserRecordRequest) GetLimit() (v int32) {
 	return p.Limit
 }
 func (p *GetUserRecordRequest) SetUid(val *int64) {
 	p.Uid = val
 }
-func (p *GetUserRecordRequest) SetOffset(val int64) {
+func (p *GetUserRecordRequest) SetOffset(val int32) {
 	p.Offset = val
 }
-func (p *GetUserRecordRequest) SetLimit(val int64) {
+func (p *GetUserRecordRequest) SetLimit(val int32) {
 	p.Limit = val
 }
 
@@ -2543,7 +3318,7 @@ func (p *GetUserRecordRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -2554,7 +3329,7 @@ func (p *GetUserRecordRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -2615,7 +3390,7 @@ func (p *GetUserRecordRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *GetUserRecordRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Offset = v
@@ -2624,7 +3399,7 @@ func (p *GetUserRecordRequest) ReadField2(iprot thrift.TProtocol) error {
 }
 
 func (p *GetUserRecordRequest) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -2689,10 +3464,10 @@ WriteFieldEndError:
 }
 
 func (p *GetUserRecordRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("offset", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("offset", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Offset); err != nil {
+	if err := oprot.WriteI32(p.Offset); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2706,10 +3481,10 @@ WriteFieldEndError:
 }
 
 func (p *GetUserRecordRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I64, 3); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Limit); err != nil {
+	if err := oprot.WriteI32(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2759,14 +3534,14 @@ func (p *GetUserRecordRequest) Field1DeepEqual(src *int64) bool {
 	}
 	return true
 }
-func (p *GetUserRecordRequest) Field2DeepEqual(src int64) bool {
+func (p *GetUserRecordRequest) Field2DeepEqual(src int32) bool {
 
 	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *GetUserRecordRequest) Field3DeepEqual(src int64) bool {
+func (p *GetUserRecordRequest) Field3DeepEqual(src int32) bool {
 
 	if p.Limit != src {
 		return false
@@ -3384,8 +4159,8 @@ func (p *SignPosDelRequest) Field2DeepEqual(src string) bool {
 
 type GetSignPosRequest struct {
 	Gid    int32 `thrift:"gid,1,required" frugal:"1,required,i32" json:"gid"`
-	Offset int64 `thrift:"offset,2,required" frugal:"2,required,i64" json:"offset"`
-	Limit  int64 `thrift:"limit,3,required" frugal:"3,required,i64" json:"limit"`
+	Offset int32 `thrift:"offset,2,required" frugal:"2,required,i32" json:"offset"`
+	Limit  int32 `thrift:"limit,3,required" frugal:"3,required,i32" json:"limit"`
 }
 
 func NewGetSignPosRequest() *GetSignPosRequest {
@@ -3400,20 +4175,20 @@ func (p *GetSignPosRequest) GetGid() (v int32) {
 	return p.Gid
 }
 
-func (p *GetSignPosRequest) GetOffset() (v int64) {
+func (p *GetSignPosRequest) GetOffset() (v int32) {
 	return p.Offset
 }
 
-func (p *GetSignPosRequest) GetLimit() (v int64) {
+func (p *GetSignPosRequest) GetLimit() (v int32) {
 	return p.Limit
 }
 func (p *GetSignPosRequest) SetGid(val int32) {
 	p.Gid = val
 }
-func (p *GetSignPosRequest) SetOffset(val int64) {
+func (p *GetSignPosRequest) SetOffset(val int32) {
 	p.Offset = val
 }
-func (p *GetSignPosRequest) SetLimit(val int64) {
+func (p *GetSignPosRequest) SetLimit(val int32) {
 	p.Limit = val
 }
 
@@ -3457,7 +4232,7 @@ func (p *GetSignPosRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -3468,7 +4243,7 @@ func (p *GetSignPosRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -3534,7 +4309,7 @@ func (p *GetSignPosRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *GetSignPosRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Offset = v
@@ -3543,7 +4318,7 @@ func (p *GetSignPosRequest) ReadField2(iprot thrift.TProtocol) error {
 }
 
 func (p *GetSignPosRequest) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -3606,10 +4381,10 @@ WriteFieldEndError:
 }
 
 func (p *GetSignPosRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("offset", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("offset", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Offset); err != nil {
+	if err := oprot.WriteI32(p.Offset); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -3623,10 +4398,10 @@ WriteFieldEndError:
 }
 
 func (p *GetSignPosRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I64, 3); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Limit); err != nil {
+	if err := oprot.WriteI32(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -3671,14 +4446,14 @@ func (p *GetSignPosRequest) Field1DeepEqual(src int32) bool {
 	}
 	return true
 }
-func (p *GetSignPosRequest) Field2DeepEqual(src int64) bool {
+func (p *GetSignPosRequest) Field2DeepEqual(src int32) bool {
 
 	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *GetSignPosRequest) Field3DeepEqual(src int64) bool {
+func (p *GetSignPosRequest) Field3DeepEqual(src int32) bool {
 
 	if p.Limit != src {
 		return false
@@ -4334,6 +5109,8 @@ type SignService interface {
 
 	GetMonthSign(ctx context.Context, req *GetMonthSignRequest) (r *MonthSignResponse, err error)
 
+	GetMonthSignByGid(ctx context.Context, req *GetMonthSignsByGid) (r *MonthSignsResponse, err error)
+
 	GetAllRecord(ctx context.Context, req *GetAllRecordRequest) (r *RecordsResponse, err error)
 
 	GetUserRecord(ctx context.Context, req *GetUserRecordRequest) (r *RecordsResponse, err error)
@@ -4394,6 +5171,15 @@ func (p *SignServiceClient) GetMonthSign(ctx context.Context, req *GetMonthSignR
 	_args.Req = req
 	var _result SignServiceGetMonthSignResult
 	if err = p.Client_().Call(ctx, "GetMonthSign", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *SignServiceClient) GetMonthSignByGid(ctx context.Context, req *GetMonthSignsByGid) (r *MonthSignsResponse, err error) {
+	var _args SignServiceGetMonthSignByGidArgs
+	_args.Req = req
+	var _result SignServiceGetMonthSignByGidResult
+	if err = p.Client_().Call(ctx, "GetMonthSignByGid", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -4467,6 +5253,7 @@ func NewSignServiceProcessor(handler SignService) *SignServiceProcessor {
 	self.AddToProcessorMap("Sign", &signServiceProcessorSign{handler: handler})
 	self.AddToProcessorMap("AskLeave", &signServiceProcessorAskLeave{handler: handler})
 	self.AddToProcessorMap("GetMonthSign", &signServiceProcessorGetMonthSign{handler: handler})
+	self.AddToProcessorMap("GetMonthSignByGid", &signServiceProcessorGetMonthSignByGid{handler: handler})
 	self.AddToProcessorMap("GetAllRecord", &signServiceProcessorGetAllRecord{handler: handler})
 	self.AddToProcessorMap("GetUserRecord", &signServiceProcessorGetUserRecord{handler: handler})
 	self.AddToProcessorMap("SignPosAdd", &signServiceProcessorSignPosAdd{handler: handler})
@@ -4619,6 +5406,54 @@ func (p *signServiceProcessorGetMonthSign) Process(ctx context.Context, seqId in
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("GetMonthSign", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type signServiceProcessorGetMonthSignByGid struct {
+	handler SignService
+}
+
+func (p *signServiceProcessorGetMonthSignByGid) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := SignServiceGetMonthSignByGidArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetMonthSignByGid", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := SignServiceGetMonthSignByGidResult{}
+	var retval *MonthSignsResponse
+	if retval, err2 = p.handler.GetMonthSignByGid(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetMonthSignByGid: "+err2.Error())
+		oprot.WriteMessageBegin("GetMonthSignByGid", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetMonthSignByGid", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -5907,6 +6742,352 @@ func (p *SignServiceGetMonthSignResult) DeepEqual(ano *SignServiceGetMonthSignRe
 }
 
 func (p *SignServiceGetMonthSignResult) Field0DeepEqual(src *MonthSignResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type SignServiceGetMonthSignByGidArgs struct {
+	Req *GetMonthSignsByGid `thrift:"req,1" frugal:"1,default,GetMonthSignsByGid" json:"req"`
+}
+
+func NewSignServiceGetMonthSignByGidArgs() *SignServiceGetMonthSignByGidArgs {
+	return &SignServiceGetMonthSignByGidArgs{}
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) InitDefault() {
+	*p = SignServiceGetMonthSignByGidArgs{}
+}
+
+var SignServiceGetMonthSignByGidArgs_Req_DEFAULT *GetMonthSignsByGid
+
+func (p *SignServiceGetMonthSignByGidArgs) GetReq() (v *GetMonthSignsByGid) {
+	if !p.IsSetReq() {
+		return SignServiceGetMonthSignByGidArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *SignServiceGetMonthSignByGidArgs) SetReq(val *GetMonthSignsByGid) {
+	p.Req = val
+}
+
+var fieldIDToName_SignServiceGetMonthSignByGidArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_SignServiceGetMonthSignByGidArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewGetMonthSignsByGid()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetMonthSignByGid_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SignServiceGetMonthSignByGidArgs(%+v)", *p)
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) DeepEqual(ano *SignServiceGetMonthSignByGidArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *SignServiceGetMonthSignByGidArgs) Field1DeepEqual(src *GetMonthSignsByGid) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type SignServiceGetMonthSignByGidResult struct {
+	Success *MonthSignsResponse `thrift:"success,0,optional" frugal:"0,optional,MonthSignsResponse" json:"success,omitempty"`
+}
+
+func NewSignServiceGetMonthSignByGidResult() *SignServiceGetMonthSignByGidResult {
+	return &SignServiceGetMonthSignByGidResult{}
+}
+
+func (p *SignServiceGetMonthSignByGidResult) InitDefault() {
+	*p = SignServiceGetMonthSignByGidResult{}
+}
+
+var SignServiceGetMonthSignByGidResult_Success_DEFAULT *MonthSignsResponse
+
+func (p *SignServiceGetMonthSignByGidResult) GetSuccess() (v *MonthSignsResponse) {
+	if !p.IsSetSuccess() {
+		return SignServiceGetMonthSignByGidResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *SignServiceGetMonthSignByGidResult) SetSuccess(x interface{}) {
+	p.Success = x.(*MonthSignsResponse)
+}
+
+var fieldIDToName_SignServiceGetMonthSignByGidResult = map[int16]string{
+	0: "success",
+}
+
+func (p *SignServiceGetMonthSignByGidResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *SignServiceGetMonthSignByGidResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_SignServiceGetMonthSignByGidResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *SignServiceGetMonthSignByGidResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewMonthSignsResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *SignServiceGetMonthSignByGidResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetMonthSignByGid_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *SignServiceGetMonthSignByGidResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *SignServiceGetMonthSignByGidResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SignServiceGetMonthSignByGidResult(%+v)", *p)
+}
+
+func (p *SignServiceGetMonthSignByGidResult) DeepEqual(ano *SignServiceGetMonthSignByGidResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *SignServiceGetMonthSignByGidResult) Field0DeepEqual(src *MonthSignsResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

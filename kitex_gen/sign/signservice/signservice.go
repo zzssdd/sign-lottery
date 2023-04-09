@@ -19,14 +19,15 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "SignService"
 	handlerType := (*sign.SignService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Sign":          kitex.NewMethodInfo(signHandler, newSignServiceSignArgs, newSignServiceSignResult, false),
-		"AskLeave":      kitex.NewMethodInfo(askLeaveHandler, newSignServiceAskLeaveArgs, newSignServiceAskLeaveResult, false),
-		"GetMonthSign":  kitex.NewMethodInfo(getMonthSignHandler, newSignServiceGetMonthSignArgs, newSignServiceGetMonthSignResult, false),
-		"GetAllRecord":  kitex.NewMethodInfo(getAllRecordHandler, newSignServiceGetAllRecordArgs, newSignServiceGetAllRecordResult, false),
-		"GetUserRecord": kitex.NewMethodInfo(getUserRecordHandler, newSignServiceGetUserRecordArgs, newSignServiceGetUserRecordResult, false),
-		"SignPosAdd":    kitex.NewMethodInfo(signPosAddHandler, newSignServiceSignPosAddArgs, newSignServiceSignPosAddResult, false),
-		"SignPosDel":    kitex.NewMethodInfo(signPosDelHandler, newSignServiceSignPosDelArgs, newSignServiceSignPosDelResult, false),
-		"GetSignPos":    kitex.NewMethodInfo(getSignPosHandler, newSignServiceGetSignPosArgs, newSignServiceGetSignPosResult, false),
+		"Sign":              kitex.NewMethodInfo(signHandler, newSignServiceSignArgs, newSignServiceSignResult, false),
+		"AskLeave":          kitex.NewMethodInfo(askLeaveHandler, newSignServiceAskLeaveArgs, newSignServiceAskLeaveResult, false),
+		"GetMonthSign":      kitex.NewMethodInfo(getMonthSignHandler, newSignServiceGetMonthSignArgs, newSignServiceGetMonthSignResult, false),
+		"GetMonthSignByGid": kitex.NewMethodInfo(getMonthSignByGidHandler, newSignServiceGetMonthSignByGidArgs, newSignServiceGetMonthSignByGidResult, false),
+		"GetAllRecord":      kitex.NewMethodInfo(getAllRecordHandler, newSignServiceGetAllRecordArgs, newSignServiceGetAllRecordResult, false),
+		"GetUserRecord":     kitex.NewMethodInfo(getUserRecordHandler, newSignServiceGetUserRecordArgs, newSignServiceGetUserRecordResult, false),
+		"SignPosAdd":        kitex.NewMethodInfo(signPosAddHandler, newSignServiceSignPosAddArgs, newSignServiceSignPosAddResult, false),
+		"SignPosDel":        kitex.NewMethodInfo(signPosDelHandler, newSignServiceSignPosDelArgs, newSignServiceSignPosDelResult, false),
+		"GetSignPos":        kitex.NewMethodInfo(getSignPosHandler, newSignServiceGetSignPosArgs, newSignServiceGetSignPosResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "sign",
@@ -94,6 +95,24 @@ func newSignServiceGetMonthSignArgs() interface{} {
 
 func newSignServiceGetMonthSignResult() interface{} {
 	return sign.NewSignServiceGetMonthSignResult()
+}
+
+func getMonthSignByGidHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*sign.SignServiceGetMonthSignByGidArgs)
+	realResult := result.(*sign.SignServiceGetMonthSignByGidResult)
+	success, err := handler.(sign.SignService).GetMonthSignByGid(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newSignServiceGetMonthSignByGidArgs() interface{} {
+	return sign.NewSignServiceGetMonthSignByGidArgs()
+}
+
+func newSignServiceGetMonthSignByGidResult() interface{} {
+	return sign.NewSignServiceGetMonthSignByGidResult()
 }
 
 func getAllRecordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -221,6 +240,16 @@ func (p *kClient) GetMonthSign(ctx context.Context, req *sign.GetMonthSignReques
 	_args.Req = req
 	var _result sign.SignServiceGetMonthSignResult
 	if err = p.c.Call(ctx, "GetMonthSign", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetMonthSignByGid(ctx context.Context, req *sign.GetMonthSignsByGid) (r *sign.MonthSignsResponse, err error) {
+	var _args sign.SignServiceGetMonthSignByGidArgs
+	_args.Req = req
+	var _result sign.SignServiceGetMonthSignByGidResult
+	if err = p.c.Call(ctx, "GetMonthSignByGid", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

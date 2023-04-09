@@ -14,6 +14,7 @@ type Client interface {
 	Sign(ctx context.Context, req *sign.SignRequest, callOptions ...callopt.Option) (r *sign.BaseResponse, err error)
 	AskLeave(ctx context.Context, req *sign.AskLeaveRequest, callOptions ...callopt.Option) (r *sign.BaseResponse, err error)
 	GetMonthSign(ctx context.Context, req *sign.GetMonthSignRequest, callOptions ...callopt.Option) (r *sign.MonthSignResponse, err error)
+	GetMonthSignByGid(ctx context.Context, req *sign.GetMonthSignsByGid, callOptions ...callopt.Option) (r *sign.MonthSignsResponse, err error)
 	GetAllRecord(ctx context.Context, req *sign.GetAllRecordRequest, callOptions ...callopt.Option) (r *sign.RecordsResponse, err error)
 	GetUserRecord(ctx context.Context, req *sign.GetUserRecordRequest, callOptions ...callopt.Option) (r *sign.RecordsResponse, err error)
 	SignPosAdd(ctx context.Context, req *sign.SignPosAddRequest, callOptions ...callopt.Option) (r *sign.BaseResponse, err error)
@@ -63,6 +64,11 @@ func (p *kSignServiceClient) AskLeave(ctx context.Context, req *sign.AskLeaveReq
 func (p *kSignServiceClient) GetMonthSign(ctx context.Context, req *sign.GetMonthSignRequest, callOptions ...callopt.Option) (r *sign.MonthSignResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetMonthSign(ctx, req)
+}
+
+func (p *kSignServiceClient) GetMonthSignByGid(ctx context.Context, req *sign.GetMonthSignsByGid, callOptions ...callopt.Option) (r *sign.MonthSignsResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetMonthSignByGid(ctx, req)
 }
 
 func (p *kSignServiceClient) GetAllRecord(ctx context.Context, req *sign.GetAllRecordRequest, callOptions ...callopt.Option) (r *sign.RecordsResponse, err error) {

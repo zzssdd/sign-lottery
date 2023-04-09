@@ -53,6 +53,8 @@ type SignLotteryApi interface {
 
 	GetMonthSign(ctx context.Context, req *sign.GetMonthSignRequest) (r *sign.MonthSignResponse, err error)
 
+	GetMonthSignByGid(ctx context.Context, req *sign.GetMonthSignsByGid) (r *sign.MonthSignsResponse, err error)
+
 	GetAllRecord(ctx context.Context, req *sign.GetAllRecordRequest) (r *sign.RecordsResponse, err error)
 
 	GetUserRecord(ctx context.Context, req *sign.GetUserRecordRequest) (r *sign.RecordsResponse, err error)
@@ -298,6 +300,15 @@ func (p *SignLotteryApiClient) GetMonthSign(ctx context.Context, req *sign.GetMo
 	}
 	return _result.GetSuccess(), nil
 }
+func (p *SignLotteryApiClient) GetMonthSignByGid(ctx context.Context, req *sign.GetMonthSignsByGid) (r *sign.MonthSignsResponse, err error) {
+	var _args SignLotteryApiGetMonthSignByGidArgs
+	_args.Req = req
+	var _result SignLotteryApiGetMonthSignByGidResult
+	if err = p.Client_().Call(ctx, "GetMonthSignByGid", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
 func (p *SignLotteryApiClient) GetAllRecord(ctx context.Context, req *sign.GetAllRecordRequest) (r *sign.RecordsResponse, err error) {
 	var _args SignLotteryApiGetAllRecordArgs
 	_args.Req = req
@@ -510,6 +521,7 @@ func NewSignLotteryApiProcessor(handler SignLotteryApi) *SignLotteryApiProcessor
 	self.AddToProcessorMap("Sign", &signLotteryApiProcessorSign{handler: handler})
 	self.AddToProcessorMap("AskLeave", &signLotteryApiProcessorAskLeave{handler: handler})
 	self.AddToProcessorMap("GetMonthSign", &signLotteryApiProcessorGetMonthSign{handler: handler})
+	self.AddToProcessorMap("GetMonthSignByGid", &signLotteryApiProcessorGetMonthSignByGid{handler: handler})
 	self.AddToProcessorMap("GetAllRecord", &signLotteryApiProcessorGetAllRecord{handler: handler})
 	self.AddToProcessorMap("GetUserRecord", &signLotteryApiProcessorGetUserRecord{handler: handler})
 	self.AddToProcessorMap("SignPosAdd", &signLotteryApiProcessorSignPosAdd{handler: handler})
@@ -1492,6 +1504,54 @@ func (p *signLotteryApiProcessorGetMonthSign) Process(ctx context.Context, seqId
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("GetMonthSign", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type signLotteryApiProcessorGetMonthSignByGid struct {
+	handler SignLotteryApi
+}
+
+func (p *signLotteryApiProcessorGetMonthSignByGid) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := SignLotteryApiGetMonthSignByGidArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetMonthSignByGid", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := SignLotteryApiGetMonthSignByGidResult{}
+	var retval *sign.MonthSignsResponse
+	if retval, err2 = p.handler.GetMonthSignByGid(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetMonthSignByGid: "+err2.Error())
+		oprot.WriteMessageBegin("GetMonthSignByGid", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetMonthSignByGid", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -8259,6 +8319,298 @@ func (p *SignLotteryApiGetMonthSignResult) String() string {
 		return "<nil>"
 	}
 	return fmt.Sprintf("SignLotteryApiGetMonthSignResult(%+v)", *p)
+}
+
+type SignLotteryApiGetMonthSignByGidArgs struct {
+	Req *sign.GetMonthSignsByGid `thrift:"req,1"`
+}
+
+func NewSignLotteryApiGetMonthSignByGidArgs() *SignLotteryApiGetMonthSignByGidArgs {
+	return &SignLotteryApiGetMonthSignByGidArgs{}
+}
+
+var SignLotteryApiGetMonthSignByGidArgs_Req_DEFAULT *sign.GetMonthSignsByGid
+
+func (p *SignLotteryApiGetMonthSignByGidArgs) GetReq() (v *sign.GetMonthSignsByGid) {
+	if !p.IsSetReq() {
+		return SignLotteryApiGetMonthSignByGidArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+var fieldIDToName_SignLotteryApiGetMonthSignByGidArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *SignLotteryApiGetMonthSignByGidArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *SignLotteryApiGetMonthSignByGidArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_SignLotteryApiGetMonthSignByGidArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *SignLotteryApiGetMonthSignByGidArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = sign.NewGetMonthSignsByGid()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *SignLotteryApiGetMonthSignByGidArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetMonthSignByGid_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *SignLotteryApiGetMonthSignByGidArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *SignLotteryApiGetMonthSignByGidArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SignLotteryApiGetMonthSignByGidArgs(%+v)", *p)
+}
+
+type SignLotteryApiGetMonthSignByGidResult struct {
+	Success *sign.MonthSignsResponse `thrift:"success,0,optional"`
+}
+
+func NewSignLotteryApiGetMonthSignByGidResult() *SignLotteryApiGetMonthSignByGidResult {
+	return &SignLotteryApiGetMonthSignByGidResult{}
+}
+
+var SignLotteryApiGetMonthSignByGidResult_Success_DEFAULT *sign.MonthSignsResponse
+
+func (p *SignLotteryApiGetMonthSignByGidResult) GetSuccess() (v *sign.MonthSignsResponse) {
+	if !p.IsSetSuccess() {
+		return SignLotteryApiGetMonthSignByGidResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+var fieldIDToName_SignLotteryApiGetMonthSignByGidResult = map[int16]string{
+	0: "success",
+}
+
+func (p *SignLotteryApiGetMonthSignByGidResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *SignLotteryApiGetMonthSignByGidResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_SignLotteryApiGetMonthSignByGidResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *SignLotteryApiGetMonthSignByGidResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = sign.NewMonthSignsResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *SignLotteryApiGetMonthSignByGidResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetMonthSignByGid_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *SignLotteryApiGetMonthSignByGidResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *SignLotteryApiGetMonthSignByGidResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SignLotteryApiGetMonthSignByGidResult(%+v)", *p)
 }
 
 type SignLotteryApiGetAllRecordArgs struct {

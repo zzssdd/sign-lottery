@@ -11,11 +11,12 @@ struct Activity{
     8:required i32 gid
     9:required string start
     10:required string end
+    11:required i32 count
 }
 
 struct Prize{
     1:required i32 id
-    2:required string create_time
+    2:required string created_at
     3:required string name
     4:required i64 num
     5:required string picture
@@ -55,13 +56,13 @@ struct ActivityDelRequest{
 
 struct GetActivityByGidRequest{
     1:required i32 gid
-    2:required i64 offset
-    3:required i64 limit
+    2:required i32 offset
+    3:required i32 limit
 }
 
 struct GetAllActivityRequest{
-    1:required i64 offset
-    2:required i64 limit
+    1:required i32 offset
+    2:required i32 limit
 }
 
 struct ActivitysResponse{
@@ -113,8 +114,7 @@ struct PrizeResponse{
 
 struct PrizesResponse{
     1:required BaseResponse resp
-    2:required i64 total
-    3:required list<Prize> prizes
+    2:required list<Prize> prizes
 }
 
 struct ChooseRequest{
@@ -129,13 +129,13 @@ struct ChooseResponse{
 
 struct GetUserOrderRequest{
     1:optional i64 uid
-    2:required i64 offset
-    3:required i64 limit
+    2:required i32 offset
+    3:required i32 limit
 }
 
 struct GetAllOrderRequest{
-    1:required i64 offset
-    2:required i64 limit
+    1:required i32 offset
+    2:required i32 limit
 }
 
 struct Order{

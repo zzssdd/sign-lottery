@@ -127,6 +127,7 @@ func Register(r *server.Hertz) {
 	}
 	{
 		_sign := root.Group("/sign", _signMw()...)
+		_sign.GET("/gmonth", append(_getmonthsignbygidMw(), api.GetMonthSignByGid)...)
 		{
 			_add2 := _sign.Group("/add", _add2Mw()...)
 			_add2.POST("/", append(_sign0Mw(), api.Sign)...)

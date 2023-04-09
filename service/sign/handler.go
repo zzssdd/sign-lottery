@@ -1,4 +1,4 @@
-package sign
+package main
 
 import (
 	"context"
@@ -22,6 +22,12 @@ func (s *SignServiceImpl) AskLeave(ctx context.Context, req *sign.AskLeaveReques
 
 // GetMonthSign implements the SignServiceImpl interface.
 func (s *SignServiceImpl) GetMonthSign(ctx context.Context, req *sign.GetMonthSignRequest) (resp *sign.MonthSignResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// GetMonthSignByGid implements the SignServiceImpl interface.
+func (s *SignServiceImpl) GetMonthSignByGid(ctx context.Context, req *sign.GetMonthSignsByGid) (resp *sign.MonthSignsResponse, err error) {
 	// TODO: Your code here...
 	return
 }

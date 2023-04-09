@@ -3173,8 +3173,8 @@ func (p *UsersResponse) Field3DeepEqual(src []*UserInfo) bool {
 }
 
 type GetAllUserRequest struct {
-	Offset int64 `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
-	Limit  int64 `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
+	Offset int32 `thrift:"offset,1,required" frugal:"1,required,i32" json:"offset"`
+	Limit  int32 `thrift:"limit,2,required" frugal:"2,required,i32" json:"limit"`
 }
 
 func NewGetAllUserRequest() *GetAllUserRequest {
@@ -3185,17 +3185,17 @@ func (p *GetAllUserRequest) InitDefault() {
 	*p = GetAllUserRequest{}
 }
 
-func (p *GetAllUserRequest) GetOffset() (v int64) {
+func (p *GetAllUserRequest) GetOffset() (v int32) {
 	return p.Offset
 }
 
-func (p *GetAllUserRequest) GetLimit() (v int64) {
+func (p *GetAllUserRequest) GetLimit() (v int32) {
 	return p.Limit
 }
-func (p *GetAllUserRequest) SetOffset(val int64) {
+func (p *GetAllUserRequest) SetOffset(val int32) {
 	p.Offset = val
 }
-func (p *GetAllUserRequest) SetLimit(val int64) {
+func (p *GetAllUserRequest) SetLimit(val int32) {
 	p.Limit = val
 }
 
@@ -3226,7 +3226,7 @@ func (p *GetAllUserRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -3237,7 +3237,7 @@ func (p *GetAllUserRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -3289,7 +3289,7 @@ RequiredFieldNotSetError:
 }
 
 func (p *GetAllUserRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Offset = v
@@ -3298,7 +3298,7 @@ func (p *GetAllUserRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *GetAllUserRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -3340,10 +3340,10 @@ WriteStructEndError:
 }
 
 func (p *GetAllUserRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("offset", thrift.I32, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Offset); err != nil {
+	if err := oprot.WriteI32(p.Offset); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -3357,10 +3357,10 @@ WriteFieldEndError:
 }
 
 func (p *GetAllUserRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Limit); err != nil {
+	if err := oprot.WriteI32(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -3395,14 +3395,14 @@ func (p *GetAllUserRequest) DeepEqual(ano *GetAllUserRequest) bool {
 	return true
 }
 
-func (p *GetAllUserRequest) Field1DeepEqual(src int64) bool {
+func (p *GetAllUserRequest) Field1DeepEqual(src int32) bool {
 
 	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *GetAllUserRequest) Field2DeepEqual(src int64) bool {
+func (p *GetAllUserRequest) Field2DeepEqual(src int32) bool {
 
 	if p.Limit != src {
 		return false
@@ -4654,8 +4654,8 @@ func (p *JoinGroupRequest) Field2DeepEqual(src int32) bool {
 
 type GetUserByGidRequest struct {
 	Gid    int32 `thrift:"gid,1,required" frugal:"1,required,i32" json:"gid"`
-	Offset int64 `thrift:"offset,2,required" frugal:"2,required,i64" json:"offset"`
-	Limit  int64 `thrift:"limit,3,required" frugal:"3,required,i64" json:"limit"`
+	Offset int32 `thrift:"offset,2,required" frugal:"2,required,i32" json:"offset"`
+	Limit  int32 `thrift:"limit,3,required" frugal:"3,required,i32" json:"limit"`
 }
 
 func NewGetUserByGidRequest() *GetUserByGidRequest {
@@ -4670,20 +4670,20 @@ func (p *GetUserByGidRequest) GetGid() (v int32) {
 	return p.Gid
 }
 
-func (p *GetUserByGidRequest) GetOffset() (v int64) {
+func (p *GetUserByGidRequest) GetOffset() (v int32) {
 	return p.Offset
 }
 
-func (p *GetUserByGidRequest) GetLimit() (v int64) {
+func (p *GetUserByGidRequest) GetLimit() (v int32) {
 	return p.Limit
 }
 func (p *GetUserByGidRequest) SetGid(val int32) {
 	p.Gid = val
 }
-func (p *GetUserByGidRequest) SetOffset(val int64) {
+func (p *GetUserByGidRequest) SetOffset(val int32) {
 	p.Offset = val
 }
-func (p *GetUserByGidRequest) SetLimit(val int64) {
+func (p *GetUserByGidRequest) SetLimit(val int32) {
 	p.Limit = val
 }
 
@@ -4727,7 +4727,7 @@ func (p *GetUserByGidRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -4738,7 +4738,7 @@ func (p *GetUserByGidRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -4804,7 +4804,7 @@ func (p *GetUserByGidRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *GetUserByGidRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Offset = v
@@ -4813,7 +4813,7 @@ func (p *GetUserByGidRequest) ReadField2(iprot thrift.TProtocol) error {
 }
 
 func (p *GetUserByGidRequest) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -4876,10 +4876,10 @@ WriteFieldEndError:
 }
 
 func (p *GetUserByGidRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("offset", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("offset", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Offset); err != nil {
+	if err := oprot.WriteI32(p.Offset); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -4893,10 +4893,10 @@ WriteFieldEndError:
 }
 
 func (p *GetUserByGidRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I64, 3); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Limit); err != nil {
+	if err := oprot.WriteI32(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -4941,14 +4941,14 @@ func (p *GetUserByGidRequest) Field1DeepEqual(src int32) bool {
 	}
 	return true
 }
-func (p *GetUserByGidRequest) Field2DeepEqual(src int64) bool {
+func (p *GetUserByGidRequest) Field2DeepEqual(src int32) bool {
 
 	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *GetUserByGidRequest) Field3DeepEqual(src int64) bool {
+func (p *GetUserByGidRequest) Field3DeepEqual(src int32) bool {
 
 	if p.Limit != src {
 		return false
@@ -4957,8 +4957,8 @@ func (p *GetUserByGidRequest) Field3DeepEqual(src int64) bool {
 }
 
 type GetAllGroupRequest struct {
-	Offset int64 `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
-	Limit  int64 `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
+	Offset int32 `thrift:"offset,1,required" frugal:"1,required,i32" json:"offset"`
+	Limit  int32 `thrift:"limit,2,required" frugal:"2,required,i32" json:"limit"`
 }
 
 func NewGetAllGroupRequest() *GetAllGroupRequest {
@@ -4969,17 +4969,17 @@ func (p *GetAllGroupRequest) InitDefault() {
 	*p = GetAllGroupRequest{}
 }
 
-func (p *GetAllGroupRequest) GetOffset() (v int64) {
+func (p *GetAllGroupRequest) GetOffset() (v int32) {
 	return p.Offset
 }
 
-func (p *GetAllGroupRequest) GetLimit() (v int64) {
+func (p *GetAllGroupRequest) GetLimit() (v int32) {
 	return p.Limit
 }
-func (p *GetAllGroupRequest) SetOffset(val int64) {
+func (p *GetAllGroupRequest) SetOffset(val int32) {
 	p.Offset = val
 }
-func (p *GetAllGroupRequest) SetLimit(val int64) {
+func (p *GetAllGroupRequest) SetLimit(val int32) {
 	p.Limit = val
 }
 
@@ -5010,7 +5010,7 @@ func (p *GetAllGroupRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -5021,7 +5021,7 @@ func (p *GetAllGroupRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -5073,7 +5073,7 @@ RequiredFieldNotSetError:
 }
 
 func (p *GetAllGroupRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Offset = v
@@ -5082,7 +5082,7 @@ func (p *GetAllGroupRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *GetAllGroupRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -5124,10 +5124,10 @@ WriteStructEndError:
 }
 
 func (p *GetAllGroupRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("offset", thrift.I32, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Offset); err != nil {
+	if err := oprot.WriteI32(p.Offset); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -5141,10 +5141,10 @@ WriteFieldEndError:
 }
 
 func (p *GetAllGroupRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Limit); err != nil {
+	if err := oprot.WriteI32(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -5179,14 +5179,14 @@ func (p *GetAllGroupRequest) DeepEqual(ano *GetAllGroupRequest) bool {
 	return true
 }
 
-func (p *GetAllGroupRequest) Field1DeepEqual(src int64) bool {
+func (p *GetAllGroupRequest) Field1DeepEqual(src int32) bool {
 
 	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *GetAllGroupRequest) Field2DeepEqual(src int64) bool {
+func (p *GetAllGroupRequest) Field2DeepEqual(src int32) bool {
 
 	if p.Limit != src {
 		return false

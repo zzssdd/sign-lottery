@@ -23,16 +23,30 @@ struct AskLeaveRequest{
 struct GetMonthSignRequest{
     1:optional i64 uid
     2:required i32 gid
+    3:required string month
 }
 
 struct MonthSignResponse{
     1:required BaseResponse resp
-    2:required i64 bitmap
+    2:required i32 bitmap
+}
+
+struct GetMonthSignsByGid{
+    1:required i32 gid
+    2:required string month
+    3:required i32 offset
+    4:required i32 limit
+}
+
+struct MonthSignsResponse{
+    1:required BaseResponse resp
+    2:required list<i32>bitmap
+    3:required i64 count
 }
 
 struct GetAllRecordRequest{
-    1:required i64 offset
-    2:required i64 limit
+    1:required i32 offset
+    2:required i32 limit
 }
 
 struct Record{
@@ -49,8 +63,8 @@ struct RecordsResponse{
 
 struct GetUserRecordRequest{
     1:optional i64 uid
-    2:required i64 offset
-    3:required i64 limit
+    2:required i32 offset
+    3:required i32 limit
 }
 
 struct SignPosAddRequest{
@@ -67,8 +81,8 @@ struct SignPosDelRequest{
 
 struct GetSignPosRequest{
     1:required i32 gid
-    2:required i64 offset
-    3:required i64 limit
+    2:required i32 offset
+    3:required i32 limit
 }
 
 struct PosInfo{
@@ -87,6 +101,7 @@ service SignService{
      BaseResponse Sign(1:SignRequest req)
      BaseResponse AskLeave(1:AskLeaveRequest req)
      MonthSignResponse GetMonthSign(1:GetMonthSignRequest req)
+     MonthSignsResponse GetMonthSignByGid(1:GetMonthSignsByGid req)
      RecordsResponse GetAllRecord(1:GetAllRecordRequest req)
      RecordsResponse GetUserRecord(1:GetUserRecordRequest req)
      BaseResponse SignPosAdd(1:SignPosAddRequest req)

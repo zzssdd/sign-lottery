@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 	lottery "sign-lottery/kitex_gen/lottery/lotteryservice"
-	lottery2 "sign-lottery/service/lottery"
+	main2 "sign-lottery/service/lottery"
 )
 
 func main() {
-	svr := lottery.NewServer(new(lottery2.LotteryServiceImpl))
+	svr := lottery.NewServer(new(main2.LotteryServiceImpl))
 
 	err := svr.Run()
 

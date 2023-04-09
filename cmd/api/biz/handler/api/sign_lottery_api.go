@@ -332,6 +332,22 @@ func GetMonthSign(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
+// GetMonthSignByGid .
+// @router /sign/gmonth [GET]
+func GetMonthSignByGid(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req sign.GetMonthSignsByGid
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(sign.MonthSignsResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
 // GetAllRecord .
 // @router /sign/recordlist/ [GET]
 func GetAllRecord(ctx context.Context, c *app.RequestContext) {
