@@ -2,11 +2,16 @@ package lottery
 
 import (
 	"context"
+	"sign-lottery/dao/cache"
+	"sign-lottery/dao/db"
 	lottery "sign-lottery/kitex_gen/lottery"
 )
 
 // LotteryServiceImpl implements the last service interface defined in the IDL.
-type LotteryServiceImpl struct{}
+type LotteryServiceImpl struct {
+	dao   *db.Dao
+	cache *cache.Cache
+}
 
 // ActivityAdd implements the LotteryServiceImpl interface.
 func (s *LotteryServiceImpl) ActivityAdd(ctx context.Context, req *lottery.ActivityAddRequest) (resp *lottery.BaseResponse, err error) {

@@ -12,10 +12,11 @@ func (u *User) Registe(ctx context.Context, user *model.User) error {
 	return db.WithContext(ctx).Create(user).Error
 }
 
-func (u *User) Login(ctx context.Context, email string, password string) bool {
+func (u *User) Login(ctx context.Context, email string, password string) (bool, int64) {
 	var count int64
-	err := db.WithContext(ctx).Model(&User{}).Where("email=? AND password=?", email, password).Count(&count).Error
-	return err == nil && count > 0
+	var id int64
+	err := db.WithContext(ctx).Model(&User{}).Select("id").Where("email=? AND password=?", email, password).First(&id).Count(&count).Error
+	return err == nil && count > 0, id
 }
 
 func (u *User) GetUserById(ctx context.Context, id int64) (user *model.User, err error) {

@@ -16,4 +16,8 @@ const (
 	MaxPasswordLen     = 30
 	Version            = 1.0
 	Mode               = "debug"
+	SmtpAddr           = "smtp.qq.com"
+	SmtpPort           = ":587"
+	SmtpAuthKey        = "afhncxjpsukidgif"
+	SmtpFromEmail      = "1654622146@qq.com"
 )

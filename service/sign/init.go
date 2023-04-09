@@ -1,12 +1,17 @@
-package main
+package sign
 
 import (
 	"context"
+	"sign-lottery/dao/cache"
+	"sign-lottery/dao/db"
 	sign "sign-lottery/kitex_gen/sign"
 )
 
 // SignServiceImpl implements the last service interface defined in the IDL.
-type SignServiceImpl struct{}
+type SignServiceImpl struct {
+	dao   *db.Dao
+	cache *cache.Cache
+}
 
 // Sign implements the SignServiceImpl interface.
 func (s *SignServiceImpl) Sign(ctx context.Context, req *sign.SignRequest) (resp *sign.BaseResponse, err error) {

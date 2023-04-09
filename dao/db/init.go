@@ -2,6 +2,7 @@ package db
 
 import (
 	"sign-lottery/pkg/constants"
+	. "sign-lottery/pkg/log"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -11,6 +12,13 @@ import (
 var db *gorm.DB
 
 type Dao struct {
+	User     User
+	Admin    Admin
+	Group    Group
+	Sign     Sign
+	Activity Activity
+	Prize    Prize
+	Order    Order
 }
 
 func InitDB() {
@@ -21,7 +29,7 @@ func InitDB() {
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {
-		panic(err)
+		Log.Errorln("open database err:", err)
 	}
 	mydb, _ := db.DB()
 	mydb.SetMaxOpenConns(100)
@@ -33,5 +41,13 @@ func NewDao() *Dao {
 	if db == nil {
 		InitDB()
 	}
-	return &Dao{}
+	return &Dao{
+		User:     User{},
+		Admin:    Admin{},
+		Group:    Group{},
+		Sign:     Sign{},
+		Activity: Activity{},
+		Prize:    Prize{},
+		Order:    Order{},
+	}
 }
