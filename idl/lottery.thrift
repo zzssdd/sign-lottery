@@ -11,7 +11,7 @@ struct Activity{
     8:required i32 gid
     9:required string start
     10:required string end
-    11:required i32 count
+    11:required i64 count
 }
 
 struct Prize{

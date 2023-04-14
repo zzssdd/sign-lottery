@@ -5,11 +5,10 @@ package api
 import (
 	"context"
 	"fmt"
+	"github.com/apache/thrift/lib/go/thrift"
 	"sign-lottery/cmd/api/biz/model/lottery"
 	"sign-lottery/cmd/api/biz/model/sign"
 	"sign-lottery/cmd/api/biz/model/user"
-
-	"github.com/apache/thrift/lib/go/thrift"
 )
 
 type SignLotteryApi interface {

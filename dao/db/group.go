@@ -10,7 +10,7 @@ import (
 type Group struct {
 }
 
-func (g *Group) CreateGroup(ctx context.Context, group model.SignGroup) error {
+func (g *Group) CreateGroup(ctx context.Context, group *model.SignGroup) error {
 	return db.WithContext(ctx).Create(&group).Error
 }
 

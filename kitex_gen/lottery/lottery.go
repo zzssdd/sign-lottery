@@ -15,12 +15,12 @@ type Activity struct {
 	Name      string `thrift:"name,3,required" frugal:"3,required,string" json:"name"`
 	Picture   string `thrift:"picture,4,required" frugal:"4,required,string" json:"picture"`
 	Desc      string `thrift:"desc,5,required" frugal:"5,required,string" json:"desc"`
-	Cost      int64  `thrift:"cost,6,required" frugal:"6,required,i64" json:"cost"`
+	Cost      int32  `thrift:"cost,6,required" frugal:"6,required,i64" json:"cost"`
 	Uid       int64  `thrift:"uid,7,required" frugal:"7,required,i64" json:"uid"`
 	Gid       int32  `thrift:"gid,8,required" frugal:"8,required,i32" json:"gid"`
 	Start     string `thrift:"start,9,required" frugal:"9,required,string" json:"start"`
 	End       string `thrift:"end,10,required" frugal:"10,required,string" json:"end"`
-	Count     int32  `thrift:"count,11,required" frugal:"11,required,i32" json:"count"`
+	Count     int64  `thrift:"count,11,required" frugal:"11,required,i32" json:"count"`
 }
 
 func NewActivity() *Activity {
@@ -71,7 +71,7 @@ func (p *Activity) GetEnd() (v string) {
 	return p.End
 }
 
-func (p *Activity) GetCount() (v int32) {
+func (p *Activity) GetCount() (v int64) {
 	return p.Count
 }
 func (p *Activity) SetId(val int32) {
@@ -89,7 +89,7 @@ func (p *Activity) SetPicture(val string) {
 func (p *Activity) SetDesc(val string) {
 	p.Desc = val
 }
-func (p *Activity) SetCost(val int64) {
+func (p *Activity) SetCost(val int32) {
 	p.Cost = val
 }
 func (p *Activity) SetUid(val int64) {
@@ -104,7 +104,7 @@ func (p *Activity) SetStart(val string) {
 func (p *Activity) SetEnd(val string) {
 	p.End = val
 }
-func (p *Activity) SetCount(val int32) {
+func (p *Activity) SetCount(val int64) {
 	p.Count = val
 }
 
@@ -2173,7 +2173,7 @@ type ActivityUpdateRequest struct {
 	Picture string `thrift:"picture,3,required" frugal:"3,required,string" json:"picture"`
 	Desc    string `thrift:"desc,4,required" frugal:"4,required,string" json:"desc"`
 	Cost    int32  `thrift:"cost,5,required" frugal:"5,required,i32" json:"cost"`
-	Uid     int32  `thrift:"uid,6,required" frugal:"6,required,i32" json:"uid"`
+	Uid     int64  `thrift:"uid,6,required" frugal:"6,required,i64" json:"uid"`
 	Gid     int32  `thrift:"gid,7,required" frugal:"7,required,i32" json:"gid"`
 	Start   string `thrift:"start,8,required" frugal:"8,required,string" json:"start"`
 	End     string `thrift:"end,9,required" frugal:"9,required,string" json:"end"`
@@ -2207,7 +2207,7 @@ func (p *ActivityUpdateRequest) GetCost() (v int32) {
 	return p.Cost
 }
 
-func (p *ActivityUpdateRequest) GetUid() (v int32) {
+func (p *ActivityUpdateRequest) GetUid() (v int64) {
 	return p.Uid
 }
 

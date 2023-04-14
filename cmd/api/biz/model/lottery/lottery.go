@@ -5,7 +5,6 @@ package lottery
 import (
 	"context"
 	"fmt"
-
 	"github.com/apache/thrift/lib/go/thrift"
 )
 

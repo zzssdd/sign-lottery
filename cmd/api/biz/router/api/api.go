@@ -3,9 +3,10 @@
 package api
 
 import (
-	"sign-lottery/cmd/api/biz/handler/api"
-
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"sign-lottery/cmd/api/biz/handler/api/base"
+	"sign-lottery/cmd/api/biz/handler/api/lottery"
+	"sign-lottery/cmd/api/biz/handler/api/sign"
 )
 
 /*
@@ -22,172 +23,172 @@ func Register(r *server.Hertz) {
 		_activity := root.Group("/activity", _activityMw()...)
 		{
 			_add := _activity.Group("/add", _addMw()...)
-			_add.POST("/", append(__ctivity_ddMw(), api.ActivityAdd)...)
+			_add.POST("/", append(__ctivity_ddMw(), lottery.ActivityAdd)...)
 		}
 		{
 			_del := _activity.Group("/del", _delMw()...)
-			_del.DELETE("/", append(__ctivitydelMw(), api.ActivityDel)...)
+			_del.DELETE("/", append(__ctivitydelMw(), lottery.ActivityDel)...)
 		}
 		{
 			_gid := _activity.Group("/gid", _gidMw()...)
-			_gid.GET("/", append(_get_ctivitybygidMw(), api.GetActivityByGid)...)
+			_gid.GET("/", append(_get_ctivitybygidMw(), lottery.GetActivityByGid)...)
 		}
 		{
 			_id := _activity.Group("/id", _idMw()...)
-			_id.GET("/", append(_get_ctivitybyidMw(), api.GetActivityById)...)
+			_id.GET("/", append(_get_ctivitybyidMw(), lottery.GetActivityById)...)
 		}
 		{
 			_list := _activity.Group("/list", _listMw()...)
-			_list.GET("/", append(_get_ll_ctivityMw(), api.GetAllActivity)...)
+			_list.GET("/", append(_get_ll_ctivityMw(), lottery.GetAllActivity)...)
 		}
 		{
 			_update := _activity.Group("/update", _updateMw()...)
-			_update.PUT("/", append(__ctivityupdateMw(), api.ActivityUpdate)...)
+			_update.PUT("/", append(__ctivityupdateMw(), lottery.ActivityUpdate)...)
 		}
 	}
 	{
 		_admin := root.Group("/admin", _adminMw()...)
 		{
 			_login := _admin.Group("/login", _loginMw()...)
-			_login.POST("/", append(__dminloginMw(), api.AdminLogin)...)
+			_login.POST("/", append(__dminloginMw(), base.AdminLogin)...)
 		}
 		{
 			_user := _admin.Group("/user", _userMw()...)
-			_user.DELETE("/", append(_userdelMw(), api.UserDel)...)
+			_user.DELETE("/", append(_userdelMw(), base.UserDel)...)
 		}
 		{
 			_userlist := _admin.Group("/userlist", _userlistMw()...)
-			_userlist.GET("/", append(_get_lluserMw(), api.GetAllUser)...)
+			_userlist.GET("/", append(_get_lluserMw(), base.GetAllUser)...)
 		}
 	}
 	{
 		_group := root.Group("/group", _groupMw()...)
 		{
 			_add0 := _group.Group("/add", _add0Mw()...)
-			_add0.POST("/", append(_creategroupMw(), api.CreateGroup)...)
+			_add0.POST("/", append(_creategroupMw(), base.CreateGroup)...)
 		}
 		{
 			_del0 := _group.Group("/del", _del0Mw()...)
-			_del0.DELETE("/", append(_groupdelMw(), api.GroupDel)...)
+			_del0.DELETE("/", append(_groupdelMw(), base.GroupDel)...)
 		}
 		{
 			_id0 := _group.Group("/id", _id0Mw()...)
-			_id0.GET("/", append(_getgroupbyidMw(), api.GetGroupById)...)
+			_id0.GET("/", append(_getgroupbyidMw(), base.GetGroupById)...)
 		}
 		{
 			_join := _group.Group("/join", _joinMw()...)
-			_join.POST("/", append(_joingroupMw(), api.JoinGroup)...)
+			_join.POST("/", append(_joingroupMw(), base.JoinGroup)...)
 		}
 		{
 			_list0 := _group.Group("/list", _list0Mw()...)
-			_list0.GET("/", append(_get_llgroupMw(), api.GetAllGroup)...)
+			_list0.GET("/", append(_get_llgroupMw(), base.GetAllGroup)...)
 		}
 		{
 			_put := _group.Group("/put", _putMw()...)
-			_put.PUT("/", append(_groupupdateMw(), api.GroupUpdate)...)
+			_put.PUT("/", append(_groupupdateMw(), base.GroupUpdate)...)
 		}
 	}
 	{
 		_order := root.Group("/order", _orderMw()...)
 		{
 			_list1 := _order.Group("/list", _list1Mw()...)
-			_list1.GET("/", append(_get_llorderMw(), api.GetAllOrder)...)
+			_list1.GET("/", append(_get_llorderMw(), lottery.GetAllOrder)...)
 		}
 		{
 			_uid := _order.Group("/uid", _uidMw()...)
-			_uid.GET("/", append(_getuserorderMw(), api.GetUserOrder)...)
+			_uid.GET("/", append(_getuserorderMw(), lottery.GetUserOrder)...)
 		}
 	}
 	{
 		_prize := root.Group("/prize", _prizeMw()...)
 		{
 			_add1 := _prize.Group("/add", _add1Mw()...)
-			_add1.POST("/", append(_prize_ddMw(), api.PrizeAdd)...)
+			_add1.POST("/", append(_prize_ddMw(), lottery.PrizeAdd)...)
 		}
 		{
 			_aid := _prize.Group("/aid", _aidMw()...)
-			_aid.GET("/", append(_getprizeby_idMw(), api.GetPrizeByAid)...)
+			_aid.GET("/", append(_getprizeby_idMw(), lottery.GetPrizeByAid)...)
 		}
 		{
 			_choose := _prize.Group("/choose", _chooseMw()...)
-			_choose.GET("/", append(_choose0Mw(), api.Choose)...)
+			_choose.GET("/", append(_choose0Mw(), lottery.Choose)...)
 		}
 		{
 			_del1 := _prize.Group("/del", _del1Mw()...)
-			_del1.DELETE("/", append(_prizedelMw(), api.PrizeDel)...)
+			_del1.DELETE("/", append(_prizedelMw(), lottery.PrizeDel)...)
 		}
 		{
 			_id1 := _prize.Group("/id", _id1Mw()...)
-			_id1.GET("/", append(_getprizebyidMw(), api.GetPrizeById)...)
+			_id1.GET("/", append(_getprizebyidMw(), lottery.GetPrizeById)...)
 		}
 		{
 			_update0 := _prize.Group("/update", _update0Mw()...)
-			_update0.PUT("/", append(_prizeupdateMw(), api.PrizeUpdate)...)
+			_update0.PUT("/", append(_prizeupdateMw(), lottery.PrizeUpdate)...)
 		}
 	}
 	{
 		_sign := root.Group("/sign", _signMw()...)
-		_sign.GET("/gmonth", append(_getmonthsignbygidMw(), api.GetMonthSignByGid)...)
+		_sign.GET("/gmonth", append(_getmonthsignbygidMw(), sign.GetMonthSignByGid)...)
 		{
 			_add2 := _sign.Group("/add", _add2Mw()...)
-			_add2.POST("/", append(_sign0Mw(), api.Sign)...)
+			_add2.POST("/", append(_sign0Mw(), sign.Sign)...)
 		}
 		{
 			_leave := _sign.Group("/leave", _leaveMw()...)
-			_leave.POST("/", append(__skleaveMw(), api.AskLeave)...)
+			_leave.POST("/", append(__skleaveMw(), sign.AskLeave)...)
 		}
 		{
 			_month := _sign.Group("/month", _monthMw()...)
-			_month.GET("/", append(_getmonthsignMw(), api.GetMonthSign)...)
+			_month.GET("/", append(_getmonthsignMw(), sign.GetMonthSign)...)
 		}
 		{
 			_pos := _sign.Group("/pos", _posMw()...)
-			_pos.POST("/", append(_signpos_ddMw(), api.SignPosAdd)...)
-			_pos.DELETE("/", append(_signposdelMw(), api.SignPosDel)...)
-			_pos.GET("/", append(_getsignposMw(), api.GetSignPos)...)
+			_pos.POST("/", append(_signpos_ddMw(), sign.SignPosAdd)...)
+			_pos.DELETE("/", append(_signposdelMw(), sign.SignPosDel)...)
+			_pos.GET("/", append(_getsignposMw(), sign.GetSignPos)...)
 		}
 		{
 			_record := _sign.Group("/record", _recordMw()...)
-			_record.GET("/", append(_getuserrecordMw(), api.GetUserRecord)...)
+			_record.GET("/", append(_getuserrecordMw(), sign.GetUserRecord)...)
 		}
 		{
 			_recordlist := _sign.Group("/recordlist", _recordlistMw()...)
-			_recordlist.GET("/", append(_get_llrecordMw(), api.GetAllRecord)...)
+			_recordlist.GET("/", append(_get_llrecordMw(), sign.GetAllRecord)...)
 		}
 	}
 	{
 		_user0 := root.Group("/user", _user0Mw()...)
 		{
 			_address := _user0.Group("/address", _addressMw()...)
-			_address.PUT("/", append(_changeuser_ddressMw(), api.ChangeUserAddress)...)
+			_address.PUT("/", append(_changeuser_ddressMw(), base.ChangeUserAddress)...)
 		}
 		{
 			_avater := _user0.Group("/avater", _avaterMw()...)
-			_avater.PUT("/", append(_changeuser_vaterMw(), api.ChangeUserAvater)...)
+			_avater.PUT("/", append(_changeuser_vaterMw(), base.ChangeUserAvater)...)
 		}
 		{
 			_email := _user0.Group("/email", _emailMw()...)
-			_email.POST("/", append(_sendemailMw(), api.SendEmail)...)
+			_email.POST("/", append(_sendemailMw(), base.SendEmail)...)
 		}
 		{
 			_gid0 := _user0.Group("/gid", _gid0Mw()...)
-			_gid0.GET("/", append(_getuserbygidMw(), api.GetUserByGid)...)
+			_gid0.GET("/", append(_getuserbygidMw(), base.GetUserByGid)...)
 		}
 		{
 			_id2 := _user0.Group("/id", _id2Mw()...)
-			_id2.GET("/", append(_getuserbyidMw(), api.GetUserById)...)
+			_id2.GET("/", append(_getuserbyidMw(), base.GetUserById)...)
 		}
 		{
 			_login0 := _user0.Group("/login", _login0Mw()...)
-			_login0.POST("/", append(_login1Mw(), api.Login)...)
+			_login0.POST("/", append(_login1Mw(), base.Login)...)
 		}
 		{
 			_password := _user0.Group("/password", _passwordMw()...)
-			_password.PUT("/", append(_changeuserpasswordMw(), api.ChangeUserPassword)...)
+			_password.PUT("/", append(_changeuserpasswordMw(), base.ChangeUserPassword)...)
 		}
 		{
 			_registe := _user0.Group("/registe", _registeMw()...)
-			_registe.POST("/", append(_registe0Mw(), api.Registe)...)
+			_registe.POST("/", append(_registe0Mw(), base.Registe)...)
 		}
 	}
 }

@@ -170,4 +170,5 @@ service BaseService{
      GroupsResponse GetAllGroup(1:GetAllGroupRequest req)
      BaseResponse GroupUpdate(1:GroupUpdateRequest req)
      BaseResponse GroupDel(1:GroupDelRequest req)
+     //GetGroupByUid
 }

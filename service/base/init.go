@@ -10,3 +10,10 @@ type BaseServiceImpl struct {
 	dao   *db.Dao
 	cache *cache.Cache
 }
+
+func NewService() *BaseServiceImpl {
+	return &BaseServiceImpl{
+		dao:   db.NewDao(),
+		cache: cache.NewCache(),
+	}
+}

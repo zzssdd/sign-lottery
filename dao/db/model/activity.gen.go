@@ -19,7 +19,7 @@ type Activity struct {
 	Name      string                `gorm:"column:name;type:varchar(50);not null" json:"name"`
 	Des       *string               `gorm:"column:des;type:tinytext" json:"des"`
 	Picture   *string               `gorm:"column:picture;type:varchar(30)" json:"picture"`
-	Cost      *int                  `gorm:"column:cost;type:int unsigned" json:"cost"`
+	Cost      *int32                  `gorm:"column:cost;type:int unsigned" json:"cost"`
 	UID       *int64                `gorm:"column:uid;type:bigint unsigned" json:"uid"`
 	Gid       int                   `gorm:"column:gid;type:int unsigned;not null" json:"gid"`
 	Start     *time.Time            `gorm:"column:start;type:datetime" json:"start"`
