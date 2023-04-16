@@ -6,6 +6,8 @@ import (
 	"sign-lottery/kitex_gen/lottery"
 	"sign-lottery/pkg/errmsg"
 	. "sign-lottery/pkg/log"
+	"sign-lottery/rabbitmq/consumer"
+	model2 "sign-lottery/rabbitmq/model"
 )
 
 // GetUserOrder implements the LotteryServiceImpl interface.
@@ -80,4 +82,25 @@ func (s *LotteryServiceImpl) GetAllOrder(ctx context.Context, req *lottery.GetAl
 	resp.Resp.Code = errmsg.Success
 	resp.Resp.Msg = errmsg.GetMsg(errmsg.Success)
 	return
+}
+
+func (s *LotteryServiceImpl) HandleRabbitOrder(ctx context.Context) error {
+	orderChan := make(chan model2.Order)
+	err := consumer.NewConsumer().Order.ProducerOrder(orderChan)
+	if err != nil {
+		return err
+	}
+	for msg := range orderChan {
+		uid := msg.Uid
+		pid := msg.Pid
+		uOrder := &model.UserOrder{
+			UID: uid,
+			Pid: int(pid),
+		}
+		err = s.dao.Order.OrderCreate(ctx, uOrder)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

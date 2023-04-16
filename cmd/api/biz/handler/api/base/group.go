@@ -4,7 +4,11 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"sign-lottery/cmd/api/biz/handler/common"
 	"sign-lottery/cmd/api/biz/model/user"
+	"sign-lottery/cmd/rpc/base"
+	base2 "sign-lottery/kitex_gen/user"
+	. "sign-lottery/pkg/log"
 )
 
 // CreateGroup .
@@ -17,9 +21,15 @@ func CreateGroup(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	var rpcReq *base2.CreateGroupRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.CreateGroup(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("create group err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -33,9 +43,15 @@ func JoinGroup(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	var rpcReq *base2.JoinGroupRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.JoinGroup(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("join group err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -49,9 +65,15 @@ func GetGroupById(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.GroupResponse)
-
+	var rpcReq *base2.GetGroupByIdRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.GetGroupById(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get group by id err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -65,9 +87,15 @@ func GetAllGroup(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.GroupsResponse)
-
+	var rpcReq *base2.GetAllGroupRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.GetAllGroup(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get all group err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -81,8 +109,12 @@ func GroupUpdate(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
+	var rpcReq *base2.GroupUpdateRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.GroupUpdate(ctx, rpcReq)
 
 	c.JSON(consts.StatusOK, resp)
 }
@@ -97,8 +129,12 @@ func GroupDel(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
+	var rpcReq *base2.GroupDelRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.GroupDel(ctx, rpcReq)
 
 	c.JSON(consts.StatusOK, resp)
 }

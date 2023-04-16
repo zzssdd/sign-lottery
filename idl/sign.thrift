@@ -98,7 +98,7 @@ struct GetSignPosResponse{
 }
 
 service SignService{
-     BaseResponse Sign(1:SignRequest req)
+     BaseResponse Sign()
      BaseResponse AskLeave(1:AskLeaveRequest req)
      MonthSignResponse GetMonthSign(1:GetMonthSignRequest req)
      MonthSignsResponse GetMonthSignByGid(1:GetMonthSignsByGid req)

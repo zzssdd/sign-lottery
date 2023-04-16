@@ -6,77 +6,101 @@ import (
 	"sign-lottery/kitex_gen/sign"
 	"sign-lottery/pkg/errmsg"
 	. "sign-lottery/pkg/log"
+	"sign-lottery/rabbitmq/consumer"
+	model2 "sign-lottery/rabbitmq/model"
 	"time"
 )
 
 // Sign implements the SignServiceImpl interface.
-func (s *SignServiceImpl) Sign(ctx context.Context, req *sign.SignRequest) (resp *sign.BaseResponse, err error) {
+func (s *SignServiceImpl) Sign(ctx context.Context) (resp *sign.BaseResponse, err error) {
 	// TODO: Your code here...
-	resp = new(sign.BaseResponse)
-	uid := req.GetUid()
-	gid := req.GetGid()
-	latitude := req.GetLatitude()
-	longtitude := req.GetLongtitude()
-	ip := req.GetIp()
-	ok := s.cache.Sign.PosLimit(ctx, gid, latitude, longtitude)
-	if !ok {
-		resp.Code = errmsg.SignNotInPos
-		resp.Msg = errmsg.GetMsg(errmsg.SignNotInPos)
-		return
-	}
-	ok = s.cache.Sign.IpLimit(ctx, ip, uid)
-	if !ok {
-		resp.Code = errmsg.SignIpUsed
-		resp.Msg = errmsg.GetMsg(errmsg.SignIpUsed)
-		return
-	}
-	var group *model.SignGroup
-	if !s.cache.Group.GroupInfoExist(ctx, gid) {
-		group, err = s.dao.Group.GetGroupById(ctx, gid)
-		if err != nil {
-			Log.Errorln("get group info from db err:", err)
-			resp.Code = errmsg.Error
-			resp.Msg = errmsg.GetMsg(errmsg.Error)
-			return nil, err
-		}
-		err = s.cache.Group.StoreGroupInfo(ctx, group)
-		if err != nil {
-			Log.Errorln("store group to cache err:", err)
-		}
-	} else {
-		group, err = s.cache.Group.GetGroupInfo(ctx, gid)
-		if err != nil {
-			Log.Errorln("get group info from cache err:", err)
-			resp.Code = errmsg.Error
-			resp.Msg = errmsg.GetMsg(errmsg.Error)
-			return nil, err
-		}
-	}
-	now := time.Now()
-	if now.Day() == group.Start.Day() {
-		if now.Before(group.Start) {
-			err = s.cache.Sign.UserSignStart(ctx, uid, gid)
-		} else if now.After(group.End) {
-			err = s.cache.Sign.UserSignEnd(ctx, uid, gid)
-		} else {
-			resp.Code = errmsg.SignNotInTime
-			resp.Msg = errmsg.GetMsg(errmsg.SignNotInTime)
-			return
-		}
-	} else {
-		resp.Code = errmsg.SignNotInTime
-		resp.Msg = errmsg.GetMsg(errmsg.SignNotInTime)
-		return
-	}
+	signChan := make(chan model2.Sign)
+	err = consumer.NewConsumer().Sign.ConsumerSign(signChan)
 	if err != nil {
-		Log.Errorln("add sign info to cache err:", err)
-		resp.Code = errmsg.Error
-		resp.Msg = errmsg.GetMsg(errmsg.Error)
-		return nil, err
+		Log.Fatalln("create consumer err:", err)
 	}
-	s.cache.Sign.IpLimitAdd(ctx, ip, uid)
-	resp.Code = errmsg.Success
-	resp.Msg = errmsg.GetMsg(errmsg.Success)
+	for signInfo := range signChan {
+		uid := signInfo.Uid
+		gid := signInfo.Gid
+		latitude := signInfo.Latitude
+		longtitude := signInfo.Longtitude
+		ip := signInfo.Ip
+		ok := s.cache.Sign.PosLimit(ctx, gid, latitude, longtitude)
+		if !ok {
+			err = s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.SignNotInPos)
+			if err != nil {
+				Log.Errorln("store return sign code err:", err)
+			}
+			continue
+		}
+		ok = s.cache.Sign.IpLimit(ctx, ip, uid)
+		if !ok {
+			err = s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.SignIpUsed)
+			if err != nil {
+				Log.Errorln("store return sign code err:", err)
+			}
+			continue
+		}
+		var group *model.SignGroup
+		if !s.cache.Group.GroupInfoExist(ctx, gid) {
+			group, err = s.dao.Group.GetGroupById(ctx, gid)
+			if err != nil {
+				Log.Errorln("get group info from db err:", err)
+				err2 := s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.Error)
+				if err2 != nil {
+					Log.Errorln("store return sign code err:", err)
+				}
+				continue
+			}
+			err = s.cache.Group.StoreGroupInfo(ctx, group)
+			if err != nil {
+				Log.Errorln("store group to cache err:", err)
+				continue
+			}
+		} else {
+			group, err = s.cache.Group.GetGroupInfo(ctx, gid)
+			if err != nil {
+				Log.Errorln("get group info from cache err:", err)
+				err2 := s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.Error)
+				if err2 != nil {
+					Log.Errorln("store return code err:", err)
+				}
+				continue
+			}
+		}
+		now := time.Now()
+		if now.Day() == group.Start.Day() {
+			if now.Before(group.Start) {
+				err = s.cache.Sign.UserSignStart(ctx, uid, gid)
+			} else if now.After(group.End) {
+				err = s.cache.Sign.UserSignEnd(ctx, uid, gid)
+			} else {
+				err2 := s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.SignNotInTime)
+				if err2 != nil {
+					Log.Errorln("store return code err:", err)
+				}
+				continue
+			}
+		} else {
+			err2 := s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.SignNotInTime)
+			if err2 != nil {
+				Log.Errorln("store return code err:", err)
+			}
+			continue
+		}
+		if err != nil {
+			err2 := s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.Error)
+			if err2 != nil {
+				Log.Errorln("store return code err:", err)
+			}
+			Log.Errorln("add sign info to cache err:", err)
+			continue
+		}
+		err2 := s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.Success)
+		if err2 != nil {
+			Log.Errorln("store return code err:", err)
+		}
+	}
 	//month := strconv.Itoa(time.Now().Year()) + "-" + time.Now().Month().String() + "-" + strconv.Itoa(time.Now().Day())
 	return
 }

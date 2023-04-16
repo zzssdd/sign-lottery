@@ -4,7 +4,11 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"sign-lottery/cmd/api/biz/handler/common"
 	"sign-lottery/cmd/api/biz/model/lottery"
+	rpc "sign-lottery/cmd/rpc/lottery"
+	lottery2 "sign-lottery/kitex_gen/lottery"
+	. "sign-lottery/pkg/log"
 )
 
 // GetUserOrder .
@@ -17,9 +21,17 @@ func GetUserOrder(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.OrdersResponse)
-
+	var rpcReq *lottery2.GetUserOrderRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.GetUserOrder(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get user order err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -33,8 +45,16 @@ func GetAllOrder(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.OrdersResponse)
-
+	var rpcReq *lottery2.GetAllOrderRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.GetAllOrder(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get all order err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }

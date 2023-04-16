@@ -9,12 +9,13 @@ import (
 var cli *redis.Client
 
 type Cache struct {
-	User     User
-	Group    Group
-	Sign     Sign
-	Activity Activity
-	Prize    Prize
-	Order    Order
+	User       User
+	Group      Group
+	Sign       Sign
+	Activity   Activity
+	Prize      Prize
+	Order      Order
+	HandlerErr HandlerErr
 }
 
 func NewCache() *Cache {
@@ -26,11 +27,12 @@ func NewCache() *Cache {
 		})
 	}
 	return &Cache{
-		User:     User{},
-		Group:    Group{},
-		Sign:     Sign{},
-		Activity: Activity{},
-		Prize:    Prize{},
-		Order:    Order{},
+		User:       User{},
+		Group:      Group{},
+		Sign:       Sign{},
+		Activity:   Activity{},
+		Prize:      Prize{},
+		Order:      Order{},
+		HandlerErr: HandlerErr{},
 	}
 }

@@ -4,7 +4,11 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"sign-lottery/cmd/api/biz/handler/common"
 	"sign-lottery/cmd/api/biz/model/lottery"
+	rpc "sign-lottery/cmd/rpc/lottery"
+	lottery2 "sign-lottery/kitex_gen/lottery"
+	. "sign-lottery/pkg/log"
 )
 
 // ActivityAdd .
@@ -17,9 +21,17 @@ func ActivityAdd(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.BaseResponse)
-
+	var rpcReq *lottery2.ActivityAddRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.ActivityAdd(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("add activity err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -33,9 +45,17 @@ func ActivityDel(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.BaseResponse)
-
+	var rpcReq *lottery2.ActivityDelRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.ActivityDel(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("del activity err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -49,9 +69,17 @@ func ActivityUpdate(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.BaseResponse)
-
+	var rpcReq *lottery2.ActivityUpdateRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.ActivityUpdate(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("update activity err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -65,9 +93,17 @@ func GetActivityByGid(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.ActivitysResponse)
-
+	var rpcReq *lottery2.GetActivityByGidRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.GetActivityByGid(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get activity by gid err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -81,9 +117,17 @@ func GetAllActivity(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.ActivitysResponse)
-
+	var rpcReq *lottery2.GetAllActivityRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.GetAllActivity(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get all activity err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -97,8 +141,16 @@ func GetActivityById(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.ActivityResponse)
-
+	var rpcReq *lottery2.GetActivityByIdRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.GetActivityById(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get activity by id err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }

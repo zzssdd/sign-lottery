@@ -13,12 +13,17 @@ const (
 	NewEqualOld         = 308
 	OldPassworError     = 309
 	NameOrPasswordError = 310
+	PasswordIsTooShort  = 311
+	PasswordIsTooLong   = 312
 
 	SignNotInPos  = 401
 	SignIpUsed    = 402
 	SignNotInTime = 403
 
 	Error = 500
+
+	ChooseNoPrize = 600
+	PrizeIsNull   = 601
 )
 
 var codeMsg = map[int]string{
@@ -34,12 +39,17 @@ var codeMsg = map[int]string{
 	308: "新密码和旧密码相等",
 	309: "旧密码输入错误",
 	310: "管理员姓名或密码错误",
+	311: "密码长度太短",
+	312: "密码长度过长",
 
 	401: "未在签到范围内签到",
 	402: "每个手机只供一个用户签到",
 	403: "不在签到时间段内",
 
 	500: "错误",
+
+	600: "很遗憾，您未中奖",
+	601: "您来晚了，活动奖品已被抽完",
 }
 
 func GetMsg(code int) string {

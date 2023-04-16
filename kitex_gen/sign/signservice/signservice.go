@@ -44,9 +44,9 @@ func NewServiceInfo() *kitex.ServiceInfo {
 }
 
 func signHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*sign.SignServiceSignArgs)
+
 	realResult := result.(*sign.SignServiceSignResult)
-	success, err := handler.(sign.SignService).Sign(ctx, realArg.Req)
+	success, err := handler.(sign.SignService).Sign(ctx)
 	if err != nil {
 		return err
 	}
@@ -215,9 +215,8 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) Sign(ctx context.Context, req *sign.SignRequest) (r *sign.BaseResponse, err error) {
+func (p *kClient) Sign(ctx context.Context) (r *sign.BaseResponse, err error) {
 	var _args sign.SignServiceSignArgs
-	_args.Req = req
 	var _result sign.SignServiceSignResult
 	if err = p.c.Call(ctx, "Sign", &_args, &_result); err != nil {
 		return

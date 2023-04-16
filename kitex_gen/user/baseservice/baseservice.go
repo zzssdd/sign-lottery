@@ -52,9 +52,9 @@ func NewServiceInfo() *kitex.ServiceInfo {
 }
 
 func sendEmailHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.BaseServiceSendEmailArgs)
+
 	realResult := result.(*user.BaseServiceSendEmailResult)
-	success, err := handler.(user.BaseService).SendEmail(ctx, realArg.Req)
+	success, err := handler.(user.BaseService).SendEmail(ctx)
 	if err != nil {
 		return err
 	}
@@ -367,9 +367,8 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) SendEmail(ctx context.Context, req *user.EmailRequest) (r *user.BaseResponse, err error) {
+func (p *kClient) SendEmail(ctx context.Context) (r *user.BaseResponse, err error) {
 	var _args user.BaseServiceSendEmailArgs
-	_args.Req = req
 	var _result user.BaseServiceSendEmailResult
 	if err = p.c.Call(ctx, "SendEmail", &_args, &_result); err != nil {
 		return

@@ -15,12 +15,12 @@ type Activity struct {
 	Name      string `thrift:"name,3,required" frugal:"3,required,string" json:"name"`
 	Picture   string `thrift:"picture,4,required" frugal:"4,required,string" json:"picture"`
 	Desc      string `thrift:"desc,5,required" frugal:"5,required,string" json:"desc"`
-	Cost      int32  `thrift:"cost,6,required" frugal:"6,required,i64" json:"cost"`
+	Cost      int32  `thrift:"cost,6,required" frugal:"6,required,i32" json:"cost"`
 	Uid       int64  `thrift:"uid,7,required" frugal:"7,required,i64" json:"uid"`
 	Gid       int32  `thrift:"gid,8,required" frugal:"8,required,i32" json:"gid"`
 	Start     string `thrift:"start,9,required" frugal:"9,required,string" json:"start"`
 	End       string `thrift:"end,10,required" frugal:"10,required,string" json:"end"`
-	Count     int64  `thrift:"count,11,required" frugal:"11,required,i32" json:"count"`
+	Count     int64  `thrift:"count,11,required" frugal:"11,required,i64" json:"count"`
 }
 
 func NewActivity() *Activity {
@@ -51,7 +51,7 @@ func (p *Activity) GetDesc() (v string) {
 	return p.Desc
 }
 
-func (p *Activity) GetCost() (v int64) {
+func (p *Activity) GetCost() (v int32) {
 	return p.Cost
 }
 
@@ -208,7 +208,7 @@ func (p *Activity) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 6:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -263,7 +263,7 @@ func (p *Activity) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 11:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField11(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -405,7 +405,7 @@ func (p *Activity) ReadField5(iprot thrift.TProtocol) error {
 }
 
 func (p *Activity) ReadField6(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
 		p.Cost = v
@@ -450,7 +450,7 @@ func (p *Activity) ReadField10(iprot thrift.TProtocol) error {
 }
 
 func (p *Activity) ReadField11(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Count = v
@@ -613,10 +613,10 @@ WriteFieldEndError:
 }
 
 func (p *Activity) writeField6(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("cost", thrift.I64, 6); err != nil {
+	if err = oprot.WriteFieldBegin("cost", thrift.I32, 6); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Cost); err != nil {
+	if err := oprot.WriteI32(p.Cost); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -698,10 +698,10 @@ WriteFieldEndError:
 }
 
 func (p *Activity) writeField11(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("count", thrift.I32, 11); err != nil {
+	if err = oprot.WriteFieldBegin("count", thrift.I64, 11); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Count); err != nil {
+	if err := oprot.WriteI64(p.Count); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -798,7 +798,7 @@ func (p *Activity) Field5DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *Activity) Field6DeepEqual(src int64) bool {
+func (p *Activity) Field6DeepEqual(src int32) bool {
 
 	if p.Cost != src {
 		return false
@@ -833,7 +833,7 @@ func (p *Activity) Field10DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *Activity) Field11DeepEqual(src int32) bool {
+func (p *Activity) Field11DeepEqual(src int64) bool {
 
 	if p.Count != src {
 		return false
@@ -2237,7 +2237,7 @@ func (p *ActivityUpdateRequest) SetDesc(val string) {
 func (p *ActivityUpdateRequest) SetCost(val int32) {
 	p.Cost = val
 }
-func (p *ActivityUpdateRequest) SetUid(val int32) {
+func (p *ActivityUpdateRequest) SetUid(val int64) {
 	p.Uid = val
 }
 func (p *ActivityUpdateRequest) SetGid(val int32) {
@@ -2346,7 +2346,7 @@ func (p *ActivityUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 6:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -2511,7 +2511,7 @@ func (p *ActivityUpdateRequest) ReadField5(iprot thrift.TProtocol) error {
 }
 
 func (p *ActivityUpdateRequest) ReadField6(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Uid = v
@@ -2693,10 +2693,10 @@ WriteFieldEndError:
 }
 
 func (p *ActivityUpdateRequest) writeField6(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("uid", thrift.I32, 6); err != nil {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 6); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Uid); err != nil {
+	if err := oprot.WriteI64(p.Uid); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2838,7 +2838,7 @@ func (p *ActivityUpdateRequest) Field5DeepEqual(src int32) bool {
 	}
 	return true
 }
-func (p *ActivityUpdateRequest) Field6DeepEqual(src int32) bool {
+func (p *ActivityUpdateRequest) Field6DeepEqual(src int64) bool {
 
 	if p.Uid != src {
 		return false
@@ -7965,7 +7965,7 @@ type LotteryService interface {
 
 	GetPrizeById(ctx context.Context, req *GetPrizeByIdRequest) (r *PrizeResponse, err error)
 
-	Choose(ctx context.Context, req *ChooseRequest) (r *ChooseResponse, err error)
+	Choose(ctx context.Context) (r *ChooseResponse, err error)
 
 	GetUserOrder(ctx context.Context, req *GetUserOrderRequest) (r *OrdersResponse, err error)
 
@@ -8097,9 +8097,8 @@ func (p *LotteryServiceClient) GetPrizeById(ctx context.Context, req *GetPrizeBy
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *LotteryServiceClient) Choose(ctx context.Context, req *ChooseRequest) (r *ChooseResponse, err error) {
+func (p *LotteryServiceClient) Choose(ctx context.Context) (r *ChooseResponse, err error) {
 	var _args LotteryServiceChooseArgs
-	_args.Req = req
 	var _result LotteryServiceChooseResult
 	if err = p.Client_().Call(ctx, "Choose", &_args, &_result); err != nil {
 		return
@@ -8727,7 +8726,7 @@ func (p *lotteryServiceProcessorChoose) Process(ctx context.Context, seqId int32
 	var err2 error
 	result := LotteryServiceChooseResult{}
 	var retval *ChooseResponse
-	if retval, err2 = p.handler.Choose(ctx, args.Req); err2 != nil {
+	if retval, err2 = p.handler.Choose(ctx); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Choose: "+err2.Error())
 		oprot.WriteMessageBegin("Choose", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -12658,7 +12657,6 @@ func (p *LotteryServiceGetPrizeByIdResult) Field0DeepEqual(src *PrizeResponse) b
 }
 
 type LotteryServiceChooseArgs struct {
-	Req *ChooseRequest `thrift:"req,1" frugal:"1,default,ChooseRequest" json:"req"`
 }
 
 func NewLotteryServiceChooseArgs() *LotteryServiceChooseArgs {
@@ -12669,25 +12667,7 @@ func (p *LotteryServiceChooseArgs) InitDefault() {
 	*p = LotteryServiceChooseArgs{}
 }
 
-var LotteryServiceChooseArgs_Req_DEFAULT *ChooseRequest
-
-func (p *LotteryServiceChooseArgs) GetReq() (v *ChooseRequest) {
-	if !p.IsSetReq() {
-		return LotteryServiceChooseArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-func (p *LotteryServiceChooseArgs) SetReq(val *ChooseRequest) {
-	p.Req = val
-}
-
-var fieldIDToName_LotteryServiceChooseArgs = map[int16]string{
-	1: "req",
-}
-
-func (p *LotteryServiceChooseArgs) IsSetReq() bool {
-	return p.Req != nil
-}
+var fieldIDToName_LotteryServiceChooseArgs = map[int16]string{}
 
 func (p *LotteryServiceChooseArgs) Read(iprot thrift.TProtocol) (err error) {
 
@@ -12706,22 +12686,8 @@ func (p *LotteryServiceChooseArgs) Read(iprot thrift.TProtocol) (err error) {
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.STRUCT {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
 		}
 
 		if err = iprot.ReadFieldEnd(); err != nil {
@@ -12737,10 +12703,8 @@ ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LotteryServiceChooseArgs[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
 
 ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
@@ -12748,24 +12712,11 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *LotteryServiceChooseArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewChooseRequest()
-	if err := p.Req.Read(iprot); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (p *LotteryServiceChooseArgs) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
 	if err = oprot.WriteStructBegin("Choose_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
 
 	}
 	if err = oprot.WriteFieldStop(); err != nil {
@@ -12777,29 +12728,10 @@ func (p *LotteryServiceChooseArgs) Write(oprot thrift.TProtocol) (err error) {
 	return nil
 WriteStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
 WriteFieldStopError:
 	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
 WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *LotteryServiceChooseArgs) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := p.Req.Write(oprot); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
 func (p *LotteryServiceChooseArgs) String() string {
@@ -12813,17 +12745,6 @@ func (p *LotteryServiceChooseArgs) DeepEqual(ano *LotteryServiceChooseArgs) bool
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
-		return false
-	}
-	if !p.Field1DeepEqual(ano.Req) {
-		return false
-	}
-	return true
-}
-
-func (p *LotteryServiceChooseArgs) Field1DeepEqual(src *ChooseRequest) bool {
-
-	if !p.Req.DeepEqual(src) {
 		return false
 	}
 	return true

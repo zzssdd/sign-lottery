@@ -4193,7 +4193,7 @@ func (p *GetSignPosResponse) String() string {
 }
 
 type SignService interface {
-	Sign(ctx context.Context, req *SignRequest) (r *BaseResponse, err error)
+	Sign(ctx context.Context) (r *BaseResponse, err error)
 
 	AskLeave(ctx context.Context, req *AskLeaveRequest) (r *BaseResponse, err error)
 
@@ -4238,9 +4238,8 @@ func (p *SignServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *SignServiceClient) Sign(ctx context.Context, req *SignRequest) (r *BaseResponse, err error) {
+func (p *SignServiceClient) Sign(ctx context.Context) (r *BaseResponse, err error) {
 	var _args SignServiceSignArgs
-	_args.Req = req
 	var _result SignServiceSignResult
 	if err = p.Client_().Call(ctx, "Sign", &_args, &_result); err != nil {
 		return
@@ -4389,7 +4388,7 @@ func (p *signServiceProcessorSign) Process(ctx context.Context, seqId int32, ipr
 	var err2 error
 	result := SignServiceSignResult{}
 	var retval *BaseResponse
-	if retval, err2 = p.handler.Sign(ctx, args.Req); err2 != nil {
+	if retval, err2 = p.handler.Sign(ctx); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Sign: "+err2.Error())
 		oprot.WriteMessageBegin("Sign", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -4802,29 +4801,13 @@ func (p *signServiceProcessorGetSignPos) Process(ctx context.Context, seqId int3
 }
 
 type SignServiceSignArgs struct {
-	Req *SignRequest `thrift:"req,1"`
 }
 
 func NewSignServiceSignArgs() *SignServiceSignArgs {
 	return &SignServiceSignArgs{}
 }
 
-var SignServiceSignArgs_Req_DEFAULT *SignRequest
-
-func (p *SignServiceSignArgs) GetReq() (v *SignRequest) {
-	if !p.IsSetReq() {
-		return SignServiceSignArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-
-var fieldIDToName_SignServiceSignArgs = map[int16]string{
-	1: "req",
-}
-
-func (p *SignServiceSignArgs) IsSetReq() bool {
-	return p.Req != nil
-}
+var fieldIDToName_SignServiceSignArgs = map[int16]string{}
 
 func (p *SignServiceSignArgs) Read(iprot thrift.TProtocol) (err error) {
 
@@ -4843,22 +4826,8 @@ func (p *SignServiceSignArgs) Read(iprot thrift.TProtocol) (err error) {
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.STRUCT {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
 		}
 
 		if err = iprot.ReadFieldEnd(); err != nil {
@@ -4874,10 +4843,8 @@ ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_SignServiceSignArgs[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
 
 ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
@@ -4885,24 +4852,11 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *SignServiceSignArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewSignRequest()
-	if err := p.Req.Read(iprot); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (p *SignServiceSignArgs) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
 	if err = oprot.WriteStructBegin("Sign_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
 
 	}
 	if err = oprot.WriteFieldStop(); err != nil {
@@ -4914,29 +4868,10 @@ func (p *SignServiceSignArgs) Write(oprot thrift.TProtocol) (err error) {
 	return nil
 WriteStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
 WriteFieldStopError:
 	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
 WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *SignServiceSignArgs) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := p.Req.Write(oprot); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
 func (p *SignServiceSignArgs) String() string {

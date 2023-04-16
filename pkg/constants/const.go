@@ -1,6 +1,7 @@
 package constants
 
 const (
+	ApiServiceName     = "api"
 	BaseServiceName    = "base"
 	SignServiceName    = "sign"
 	LotteryServiceName = "lottery"
@@ -11,7 +12,6 @@ const (
 	RedisDSN           = "127.0.0.1:9911"
 	EtcdDSN            = "127.0.0.1:9912"
 	RabbitMqDSN        = "amqp://yogen:yogen123@127.0.0.1:5672/lottery"
-	MaxUsernameLen     = 30
 	MinPasswordLen     = 6
 	MaxPasswordLen     = 30
 	Version            = 1.0

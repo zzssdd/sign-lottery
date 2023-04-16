@@ -4,7 +4,11 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"sign-lottery/cmd/api/biz/handler/common"
 	"sign-lottery/cmd/api/biz/model/lottery"
+	rpc "sign-lottery/cmd/rpc/lottery"
+	lottery2 "sign-lottery/kitex_gen/lottery"
+	. "sign-lottery/pkg/log"
 )
 
 // PrizeAdd .
@@ -17,9 +21,17 @@ func PrizeAdd(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.BaseResponse)
-
+	var rpcReq *lottery2.PrizeAddRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.PrizeAdd(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("prize add err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -33,9 +45,17 @@ func PrizeDel(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.BaseResponse)
-
+	var rpcReq *lottery2.PrizeDelRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.PrizeDel(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("del prize err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -49,9 +69,18 @@ func PrizeUpdate(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	var rpcReq *lottery2.PrizeUpdateRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
 
-	resp := new(lottery.BaseResponse)
-
+	resp, err := rpc.LotteryClient.PrizeUpdate(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("update prize err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -65,9 +94,17 @@ func GetPrizeByAid(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.PrizesResponse)
-
+	var rpcReq *lottery2.GetPrizeByAidRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.GetPrizeByAid(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get prize by aid err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -81,8 +118,16 @@ func GetPrizeById(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(lottery.PrizeResponse)
-
+	var rpcReq *lottery2.GetPrizeByIdRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.LotteryClient.GetPrizeById(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get prize by id err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }

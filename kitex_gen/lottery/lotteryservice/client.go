@@ -22,7 +22,7 @@ type Client interface {
 	PrizeUpdate(ctx context.Context, req *lottery.PrizeUpdateRequest, callOptions ...callopt.Option) (r *lottery.BaseResponse, err error)
 	GetPrizeByAid(ctx context.Context, req *lottery.GetPrizeByAidRequest, callOptions ...callopt.Option) (r *lottery.PrizesResponse, err error)
 	GetPrizeById(ctx context.Context, req *lottery.GetPrizeByIdRequest, callOptions ...callopt.Option) (r *lottery.PrizeResponse, err error)
-	Choose(ctx context.Context, req *lottery.ChooseRequest, callOptions ...callopt.Option) (r *lottery.ChooseResponse, err error)
+	Choose(ctx context.Context, callOptions ...callopt.Option) (r *lottery.ChooseResponse, err error)
 	GetUserOrder(ctx context.Context, req *lottery.GetUserOrderRequest, callOptions ...callopt.Option) (r *lottery.OrdersResponse, err error)
 	GetAllOrder(ctx context.Context, req *lottery.GetAllOrderRequest, callOptions ...callopt.Option) (r *lottery.OrdersResponse, err error)
 }
@@ -111,9 +111,9 @@ func (p *kLotteryServiceClient) GetPrizeById(ctx context.Context, req *lottery.G
 	return p.kClient.GetPrizeById(ctx, req)
 }
 
-func (p *kLotteryServiceClient) Choose(ctx context.Context, req *lottery.ChooseRequest, callOptions ...callopt.Option) (r *lottery.ChooseResponse, err error) {
+func (p *kLotteryServiceClient) Choose(ctx context.Context, callOptions ...callopt.Option) (r *lottery.ChooseResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.Choose(ctx, req)
+	return p.kClient.Choose(ctx)
 }
 
 func (p *kLotteryServiceClient) GetUserOrder(ctx context.Context, req *lottery.GetUserOrderRequest, callOptions ...callopt.Option) (r *lottery.OrdersResponse, err error) {

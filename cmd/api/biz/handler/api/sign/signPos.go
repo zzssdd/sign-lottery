@@ -4,7 +4,11 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"sign-lottery/cmd/api/biz/handler/common"
 	"sign-lottery/cmd/api/biz/model/sign"
+	rpc "sign-lottery/cmd/rpc/sign"
+	sign2 "sign-lottery/kitex_gen/sign"
+	. "sign-lottery/pkg/log"
 )
 
 // GetMonthSign .
@@ -17,9 +21,17 @@ func GetMonthSign(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(sign.MonthSignResponse)
-
+	var rpcReq *sign2.GetMonthSignRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.SignClient.GetMonthSign(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get month sign err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -33,8 +45,17 @@ func GetMonthSignByGid(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(sign.MonthSignsResponse)
+	var rpcReq *sign2.GetMonthSignsByGid
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.SignClient.GetMonthSignByGid(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get month sign by gid err:", err)
+	}
 
 	c.JSON(consts.StatusOK, resp)
 }
@@ -49,9 +70,17 @@ func GetAllRecord(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(sign.RecordsResponse)
-
+	var rpcReq *sign2.GetAllRecordRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.SignClient.GetAllRecord(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get all record err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -65,8 +94,17 @@ func GetUserRecord(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	var rpcReq *sign2.GetUserRecordRequest
 
-	resp := new(sign.RecordsResponse)
-
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := rpc.SignClient.GetUserRecord(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get user record err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }

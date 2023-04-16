@@ -19,7 +19,7 @@ type Activity struct {
 	Gid       int32  `thrift:"gid,8,required" form:"gid,required" json:"gid,required" query:"gid,required"`
 	Start     string `thrift:"start,9,required" form:"start,required" json:"start,required" query:"start,required"`
 	End       string `thrift:"end,10,required" form:"end,required" json:"end,required" query:"end,required"`
-	Count     int32  `thrift:"count,11,required" form:"count,required" json:"count,required" query:"count,required"`
+	Count     int64  `thrift:"count,11,required" form:"count,required" json:"count,required" query:"count,required"`
 }
 
 func NewActivity() *Activity {
@@ -66,7 +66,7 @@ func (p *Activity) GetEnd() (v string) {
 	return p.End
 }
 
-func (p *Activity) GetCount() (v int32) {
+func (p *Activity) GetCount() (v int64) {
 	return p.Count
 }
 
@@ -225,7 +225,7 @@ func (p *Activity) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 11:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField11(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -412,7 +412,7 @@ func (p *Activity) ReadField10(iprot thrift.TProtocol) error {
 }
 
 func (p *Activity) ReadField11(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Count = v
@@ -660,10 +660,10 @@ WriteFieldEndError:
 }
 
 func (p *Activity) writeField11(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("count", thrift.I32, 11); err != nil {
+	if err = oprot.WriteFieldBegin("count", thrift.I64, 11); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Count); err != nil {
+	if err := oprot.WriteI64(p.Count); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -6563,7 +6563,7 @@ type LotteryService interface {
 
 	GetPrizeById(ctx context.Context, req *GetPrizeByIdRequest) (r *PrizeResponse, err error)
 
-	Choose(ctx context.Context, req *ChooseRequest) (r *ChooseResponse, err error)
+	Choose(ctx context.Context) (r *ChooseResponse, err error)
 
 	GetUserOrder(ctx context.Context, req *GetUserOrderRequest) (r *OrdersResponse, err error)
 
@@ -6695,9 +6695,8 @@ func (p *LotteryServiceClient) GetPrizeById(ctx context.Context, req *GetPrizeBy
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *LotteryServiceClient) Choose(ctx context.Context, req *ChooseRequest) (r *ChooseResponse, err error) {
+func (p *LotteryServiceClient) Choose(ctx context.Context) (r *ChooseResponse, err error) {
 	var _args LotteryServiceChooseArgs
-	_args.Req = req
 	var _result LotteryServiceChooseResult
 	if err = p.Client_().Call(ctx, "Choose", &_args, &_result); err != nil {
 		return
@@ -7325,7 +7324,7 @@ func (p *lotteryServiceProcessorChoose) Process(ctx context.Context, seqId int32
 	var err2 error
 	result := LotteryServiceChooseResult{}
 	var retval *ChooseResponse
-	if retval, err2 = p.handler.Choose(ctx, args.Req); err2 != nil {
+	if retval, err2 = p.handler.Choose(ctx); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Choose: "+err2.Error())
 		oprot.WriteMessageBegin("Choose", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -10662,29 +10661,13 @@ func (p *LotteryServiceGetPrizeByIdResult) String() string {
 }
 
 type LotteryServiceChooseArgs struct {
-	Req *ChooseRequest `thrift:"req,1"`
 }
 
 func NewLotteryServiceChooseArgs() *LotteryServiceChooseArgs {
 	return &LotteryServiceChooseArgs{}
 }
 
-var LotteryServiceChooseArgs_Req_DEFAULT *ChooseRequest
-
-func (p *LotteryServiceChooseArgs) GetReq() (v *ChooseRequest) {
-	if !p.IsSetReq() {
-		return LotteryServiceChooseArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-
-var fieldIDToName_LotteryServiceChooseArgs = map[int16]string{
-	1: "req",
-}
-
-func (p *LotteryServiceChooseArgs) IsSetReq() bool {
-	return p.Req != nil
-}
+var fieldIDToName_LotteryServiceChooseArgs = map[int16]string{}
 
 func (p *LotteryServiceChooseArgs) Read(iprot thrift.TProtocol) (err error) {
 
@@ -10703,22 +10686,8 @@ func (p *LotteryServiceChooseArgs) Read(iprot thrift.TProtocol) (err error) {
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.STRUCT {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
 		}
 
 		if err = iprot.ReadFieldEnd(); err != nil {
@@ -10734,10 +10703,8 @@ ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LotteryServiceChooseArgs[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
 
 ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
@@ -10745,24 +10712,11 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *LotteryServiceChooseArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewChooseRequest()
-	if err := p.Req.Read(iprot); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (p *LotteryServiceChooseArgs) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
 	if err = oprot.WriteStructBegin("Choose_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
 
 	}
 	if err = oprot.WriteFieldStop(); err != nil {
@@ -10774,29 +10728,10 @@ func (p *LotteryServiceChooseArgs) Write(oprot thrift.TProtocol) (err error) {
 	return nil
 WriteStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
 WriteFieldStopError:
 	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
 WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *LotteryServiceChooseArgs) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := p.Req.Write(oprot); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
 func (p *LotteryServiceChooseArgs) String() string {

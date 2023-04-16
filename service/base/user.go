@@ -5,34 +5,44 @@ import (
 	"gorm.io/gorm"
 	"sign-lottery/dao/db/model"
 	"sign-lottery/kitex_gen/user"
+	"sign-lottery/pkg/constants"
 	"sign-lottery/pkg/errmsg"
 	"sign-lottery/pkg/jwt"
 	. "sign-lottery/pkg/log"
+	"sign-lottery/rabbitmq/consumer"
 	"sign-lottery/utils"
 	"strconv"
 	"time"
 )
 
 // SendEmail implements the BaseServiceImpl interface.
-func (s *BaseServiceImpl) SendEmail(ctx context.Context, req *user.EmailRequest) (resp *user.BaseResponse, err error) {
-	email := req.GetEmail()
-	resp = new(user.BaseResponse)
-	code := utils.RandCode(6)
-	err = s.cache.User.StoreCode(ctx, email, code)
+func (s *BaseServiceImpl) SendEmail(ctx context.Context) (resp *user.BaseResponse, err error) {
+	emailChan := make(chan string)
+	err = consumer.NewConsumer().Email.ConsumerEmail(emailChan)
 	if err != nil {
-		resp.Code = errmsg.Error
-		resp.Msg = errmsg.GetMsg(errmsg.Error)
-		return nil, nil
+		Log.Fatalln("create consumer err:", err)
 	}
-	err = utils.SendEmail(email, code)
-	if err != nil {
-		Log.Errorln("send email err:", err)
-		resp.Code = errmsg.SendEmailFailed
-		resp.Msg = errmsg.GetMsg(errmsg.SendEmailFailed)
-		return nil, err
+	for email := range emailChan {
+		code := utils.RandCode(6)
+		if err = s.cache.User.StoreCode(ctx, email, code); err != nil {
+			Log.Errorln("store send email code err:", err)
+			err2 := s.cache.HandlerErr.ReturnEmailErr(ctx, email, errmsg.Error)
+			if err2 != nil {
+				Log.Errorln("store send email code err:", err)
+			}
+		} else if err = utils.SendEmail(email, code); err != nil {
+			Log.Errorln("send email err:", err)
+			err2 := s.cache.HandlerErr.ReturnEmailErr(ctx, email, errmsg.Error)
+			if err2 != nil {
+				Log.Errorln("store send email code err:", err)
+			}
+		} else {
+			err2 := s.cache.HandlerErr.ReturnEmailErr(ctx, email, errmsg.Success)
+			if err2 != nil {
+				Log.Errorln("store send email code err:", err)
+			}
+		}
 	}
-	resp.Code = errmsg.Success
-	resp.Msg = errmsg.GetMsg(errmsg.Success)
 	return
 }
 
@@ -43,6 +53,15 @@ func (s *BaseServiceImpl) Registe(ctx context.Context, req *user.RegisterRequest
 	password := req.GetPassword()
 	name := req.GetName()
 	code := req.Code
+	if len(password) < constants.MinPasswordLen {
+		resp.Code = errmsg.PasswordIsTooShort
+		resp.Msg = errmsg.GetMsg(errmsg.PasswordIsTooShort)
+		return
+	} else if len(password) > constants.MaxPasswordLen {
+		resp.Code = errmsg.PasswordIsTooLong
+		resp.Msg = errmsg.GetMsg(errmsg.PasswordIsTooLong)
+		return
+	}
 	if !s.cache.User.ExistCode(ctx, email) {
 		resp.Code = errmsg.CodeNotExist
 		resp.Msg = errmsg.GetMsg(errmsg.CodeNotExist)
@@ -131,7 +150,6 @@ func (s *BaseServiceImpl) Login(ctx context.Context, req *user.LoginRequest) (re
 	}
 	resp.Resp.Code = errmsg.Success
 	resp.Resp.Msg = errmsg.GetMsg(errmsg.Success)
-	resp.Id = id
 	return
 }
 

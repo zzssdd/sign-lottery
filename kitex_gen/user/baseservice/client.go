@@ -11,7 +11,7 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	SendEmail(ctx context.Context, req *user.EmailRequest, callOptions ...callopt.Option) (r *user.BaseResponse, err error)
+	SendEmail(ctx context.Context, callOptions ...callopt.Option) (r *user.BaseResponse, err error)
 	Registe(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.BaseResponse, err error)
 	Login(ctx context.Context, req *user.LoginRequest, callOptions ...callopt.Option) (r *user.LoginResponse, err error)
 	AdminLogin(ctx context.Context, req *user.AdminLoginRequest, callOptions ...callopt.Option) (r *user.AdminLoginResponse, err error)
@@ -59,9 +59,9 @@ type kBaseServiceClient struct {
 	*kClient
 }
 
-func (p *kBaseServiceClient) SendEmail(ctx context.Context, req *user.EmailRequest, callOptions ...callopt.Option) (r *user.BaseResponse, err error) {
+func (p *kBaseServiceClient) SendEmail(ctx context.Context, callOptions ...callopt.Option) (r *user.BaseResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.SendEmail(ctx, req)
+	return p.kClient.SendEmail(ctx)
 }
 
 func (p *kBaseServiceClient) Registe(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.BaseResponse, err error) {

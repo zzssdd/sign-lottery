@@ -11,7 +11,7 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	Sign(ctx context.Context, req *sign.SignRequest, callOptions ...callopt.Option) (r *sign.BaseResponse, err error)
+	Sign(ctx context.Context, callOptions ...callopt.Option) (r *sign.BaseResponse, err error)
 	AskLeave(ctx context.Context, req *sign.AskLeaveRequest, callOptions ...callopt.Option) (r *sign.BaseResponse, err error)
 	GetMonthSign(ctx context.Context, req *sign.GetMonthSignRequest, callOptions ...callopt.Option) (r *sign.MonthSignResponse, err error)
 	GetMonthSignByGid(ctx context.Context, req *sign.GetMonthSignsByGid, callOptions ...callopt.Option) (r *sign.MonthSignsResponse, err error)
@@ -51,9 +51,9 @@ type kSignServiceClient struct {
 	*kClient
 }
 
-func (p *kSignServiceClient) Sign(ctx context.Context, req *sign.SignRequest, callOptions ...callopt.Option) (r *sign.BaseResponse, err error) {
+func (p *kSignServiceClient) Sign(ctx context.Context, callOptions ...callopt.Option) (r *sign.BaseResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.Sign(ctx, req)
+	return p.kClient.Sign(ctx)
 }
 
 func (p *kSignServiceClient) AskLeave(ctx context.Context, req *sign.AskLeaveRequest, callOptions ...callopt.Option) (r *sign.BaseResponse, err error) {

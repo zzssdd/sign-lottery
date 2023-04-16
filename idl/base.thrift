@@ -42,8 +42,7 @@ struct LoginRequest{
 
 struct LoginResponse{
     1:required BaseResponse resp
-    2:required i64 id
-    3:required string token
+    2:required string token
 }
 
 struct GetUserByIdRequest{
@@ -76,7 +75,6 @@ struct AdminLoginRequest{
 struct AdminLoginResponse{
     1:required BaseResponse resp
     2:required string token
-    3:required i64 id
 }
 
 
@@ -153,7 +151,7 @@ struct GroupDelRequest{
 }
 
 service BaseService{
-     BaseResponse SendEmail(1:EmailRequest req)
+     BaseResponse SendEmail()
      BaseResponse Registe(1:RegisterRequest req)
      LoginResponse Login(1:LoginRequest req)
      AdminLoginResponse AdminLogin(1:AdminLoginRequest req)

@@ -3,14 +3,30 @@
 package main
 
 import (
-	"sign-lottery/cmd/api/biz/router"
-
+	"flag"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"sign-lottery/cmd/api/biz/router"
+	"sign-lottery/pkg/constants"
+	"sign-lottery/service/base"
+	"sign-lottery/service/lottery"
+	"sign-lottery/service/sign"
 )
 
-func main() {
-	h := server.Default()
+var ServerName string
 
-	router.GeneratedRegister(h)
-	h.Spin()
+func main() {
+	flag.StringVar(&ServerName, "server", "api", "which server to start")
+	switch ServerName {
+	case constants.ApiServiceName:
+		h := server.Default()
+		router.GeneratedRegister(h)
+		h.Spin()
+		break
+	case constants.BaseServiceName:
+		base.BaseServer()
+	case constants.SignServiceName:
+		sign.SignServer()
+	case constants.LotteryServiceName:
+		lottery.LotteryServer()
+	}
 }

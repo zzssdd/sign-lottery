@@ -1738,7 +1738,6 @@ func (p *LoginResponse) FastRead(buf []byte) (int, error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetResp bool = false
-	var issetId bool = false
 	var issetToken bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
@@ -1772,23 +1771,8 @@ func (p *LoginResponse) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
-				l, err = p.FastReadField2(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-				issetId = true
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 3:
 			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField3(buf[offset:])
+				l, err = p.FastReadField2(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
@@ -1826,13 +1810,8 @@ func (p *LoginResponse) FastRead(buf []byte) (int, error) {
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetId {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
-
 	if !issetToken {
-		fieldId = 3
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -1868,20 +1847,6 @@ func (p *LoginResponse) FastReadField1(buf []byte) (int, error) {
 func (p *LoginResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-
-		p.Id = v
-
-	}
-	return offset, nil
-}
-
-func (p *LoginResponse) FastReadField3(buf []byte) (int, error) {
-	offset := 0
-
 	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -1902,9 +1867,8 @@ func (p *LoginResponse) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryW
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "LoginResponse")
 	if p != nil {
-		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
-		offset += p.fastWriteField3(buf[offset:], binaryWriter)
+		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -1917,7 +1881,6 @@ func (p *LoginResponse) BLength() int {
 	if p != nil {
 		l += p.field1Length()
 		l += p.field2Length()
-		l += p.field3Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -1934,16 +1897,7 @@ func (p *LoginResponse) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryW
 
 func (p *LoginResponse) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "id", thrift.I64, 2)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.Id)
-
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	return offset
-}
-
-func (p *LoginResponse) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "token", thrift.STRING, 3)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "token", thrift.STRING, 2)
 	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Token)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -1960,16 +1914,7 @@ func (p *LoginResponse) field1Length() int {
 
 func (p *LoginResponse) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("id", thrift.I64, 2)
-	l += bthrift.Binary.I64Length(p.Id)
-
-	l += bthrift.Binary.FieldEndLength()
-	return l
-}
-
-func (p *LoginResponse) field3Length() int {
-	l := 0
-	l += bthrift.Binary.FieldBeginLength("token", thrift.STRING, 3)
+	l += bthrift.Binary.FieldBeginLength("token", thrift.STRING, 2)
 	l += bthrift.Binary.StringLengthNocopy(p.Token)
 
 	l += bthrift.Binary.FieldEndLength()
@@ -2963,7 +2908,6 @@ func (p *AdminLoginResponse) FastRead(buf []byte) (int, error) {
 	var fieldId int16
 	var issetResp bool = false
 	var issetToken bool = false
-	var issetId bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -3010,21 +2954,6 @@ func (p *AdminLoginResponse) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
-		case 3:
-			if fieldTypeId == thrift.I64 {
-				l, err = p.FastReadField3(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-				issetId = true
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -3052,11 +2981,6 @@ func (p *AdminLoginResponse) FastRead(buf []byte) (int, error) {
 
 	if !issetToken {
 		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetId {
-		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -3103,20 +3027,6 @@ func (p *AdminLoginResponse) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *AdminLoginResponse) FastReadField3(buf []byte) (int, error) {
-	offset := 0
-
-	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-
-		p.Id = v
-
-	}
-	return offset, nil
-}
-
 // for compatibility
 func (p *AdminLoginResponse) FastWrite(buf []byte) int {
 	return 0
@@ -3126,7 +3036,6 @@ func (p *AdminLoginResponse) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bi
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "AdminLoginResponse")
 	if p != nil {
-		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
@@ -3141,7 +3050,6 @@ func (p *AdminLoginResponse) BLength() int {
 	if p != nil {
 		l += p.field1Length()
 		l += p.field2Length()
-		l += p.field3Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -3165,15 +3073,6 @@ func (p *AdminLoginResponse) fastWriteField2(buf []byte, binaryWriter bthrift.Bi
 	return offset
 }
 
-func (p *AdminLoginResponse) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "id", thrift.I64, 3)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.Id)
-
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	return offset
-}
-
 func (p *AdminLoginResponse) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("resp", thrift.STRUCT, 1)
@@ -3186,15 +3085,6 @@ func (p *AdminLoginResponse) field2Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("token", thrift.STRING, 2)
 	l += bthrift.Binary.StringLengthNocopy(p.Token)
-
-	l += bthrift.Binary.FieldEndLength()
-	return l
-}
-
-func (p *AdminLoginResponse) field3Length() int {
-	l := 0
-	l += bthrift.Binary.FieldBeginLength("id", thrift.I64, 3)
-	l += bthrift.Binary.I64Length(p.Id)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -6109,27 +5999,10 @@ func (p *BaseServiceSendEmailArgs) FastRead(buf []byte) (int, error) {
 		if fieldTypeId == thrift.STOP {
 			break
 		}
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.STRUCT {
-				l, err = p.FastReadField1(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-			offset += l
-			if err != nil {
-				goto SkipFieldError
-			}
+		l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+		offset += l
+		if err != nil {
+			goto SkipFieldTypeError
 		}
 
 		l, err = bthrift.Binary.ReadFieldEnd(buf[offset:])
@@ -6149,27 +6022,13 @@ ReadStructBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_BaseServiceSendEmailArgs[fieldId]), err)
-SkipFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+SkipFieldTypeError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
 ReadFieldEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *BaseServiceSendEmailArgs) FastReadField1(buf []byte) (int, error) {
-	offset := 0
-
-	tmp := NewEmailRequest()
-	if l, err := tmp.FastRead(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-	}
-	p.Req = tmp
-	return offset, nil
 }
 
 // for compatibility
@@ -6181,7 +6040,6 @@ func (p *BaseServiceSendEmailArgs) FastWriteNocopy(buf []byte, binaryWriter bthr
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "SendEmail_args")
 	if p != nil {
-		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -6192,26 +6050,9 @@ func (p *BaseServiceSendEmailArgs) BLength() int {
 	l := 0
 	l += bthrift.Binary.StructBeginLength("SendEmail_args")
 	if p != nil {
-		l += p.field1Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
-	return l
-}
-
-func (p *BaseServiceSendEmailArgs) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "req", thrift.STRUCT, 1)
-	offset += p.Req.FastWriteNocopy(buf[offset:], binaryWriter)
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	return offset
-}
-
-func (p *BaseServiceSendEmailArgs) field1Length() int {
-	l := 0
-	l += bthrift.Binary.FieldBeginLength("req", thrift.STRUCT, 1)
-	l += p.Req.BLength()
-	l += bthrift.Binary.FieldEndLength()
 	return l
 }
 
@@ -10475,7 +10316,7 @@ func (p *BaseServiceGroupDelResult) field0Length() int {
 }
 
 func (p *BaseServiceSendEmailArgs) GetFirstArgument() interface{} {
-	return p.Req
+	return nil
 }
 
 func (p *BaseServiceSendEmailResult) GetResult() interface{} {

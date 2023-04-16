@@ -6,7 +6,7 @@ struct Activity{
     3:required string name
     4:required string picture
     5:required string desc
-    6:required i64 cost
+    6:required i32 cost
     7:required i64 uid
     8:required i32 gid
     9:required string start
@@ -44,7 +44,7 @@ struct ActivityUpdateRequest{
     3:required string picture
     4:required string desc
     5:required i32 cost
-    6:required i32 uid
+    6:required i64 uid
     7:required i32 gid
     8:required string start
     9:required string end
@@ -163,7 +163,7 @@ service LotteryService{
     BaseResponse PrizeUpdate(1:PrizeUpdateRequest req)
     PrizesResponse GetPrizeByAid(1:GetPrizeByAidRequest req)
     PrizeResponse GetPrizeById(1:GetPrizeByIdRequest req)
-    ChooseResponse Choose(1:ChooseRequest req)
+    ChooseResponse Choose()
     OrdersResponse GetUserOrder(1:GetUserOrderRequest req)
     OrdersResponse GetAllOrder(1:GetAllOrderRequest req)
 }

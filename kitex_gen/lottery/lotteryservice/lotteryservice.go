@@ -247,9 +247,9 @@ func newLotteryServiceGetPrizeByIdResult() interface{} {
 }
 
 func chooseHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*lottery.LotteryServiceChooseArgs)
+
 	realResult := result.(*lottery.LotteryServiceChooseResult)
-	success, err := handler.(lottery.LotteryService).Choose(ctx, realArg.Req)
+	success, err := handler.(lottery.LotteryService).Choose(ctx)
 	if err != nil {
 		return err
 	}
@@ -420,9 +420,8 @@ func (p *kClient) GetPrizeById(ctx context.Context, req *lottery.GetPrizeByIdReq
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Choose(ctx context.Context, req *lottery.ChooseRequest) (r *lottery.ChooseResponse, err error) {
+func (p *kClient) Choose(ctx context.Context) (r *lottery.ChooseResponse, err error) {
 	var _args lottery.LotteryServiceChooseArgs
-	_args.Req = req
 	var _result lottery.LotteryServiceChooseResult
 	if err = p.c.Call(ctx, "Choose", &_args, &_result); err != nil {
 		return

@@ -101,3 +101,7 @@ func (p *Prize) GetPrizeByAid(ctx context.Context, id int32) ([]*model.Prize, er
 	}
 	return ret_prizes, err
 }
+
+func (p *Prize) IncrPrize(ctx context.Context, pid int32) error {
+	return cli.HIncrBy(ctx, PrizeTag(pid), "num", -1).Err()
+}

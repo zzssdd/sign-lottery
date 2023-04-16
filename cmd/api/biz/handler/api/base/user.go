@@ -4,7 +4,15 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"sign-lottery/cmd/api/biz/handler/common"
 	"sign-lottery/cmd/api/biz/model/user"
+	"sign-lottery/cmd/rpc/base"
+	"sign-lottery/dao/cache"
+	base2 "sign-lottery/kitex_gen/user"
+	"sign-lottery/pkg/errmsg"
+	. "sign-lottery/pkg/log"
+	"sign-lottery/rabbitmq/producer"
+	"time"
 )
 
 // SendEmail .
@@ -17,9 +25,30 @@ func SendEmail(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	err = producer.NewProcuer().Email.ProducerEmail(req.Email)
+	if err != nil {
+		Log.Errorln("send email to rabbit err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	Cache := cache.NewCache()
+	for !Cache.HandlerErr.ExistEmailErr(ctx, req.Email) {
+		time.Sleep(time.Second)
+	}
+	code, err := Cache.HandlerErr.GetEmailErr(ctx, req.Email)
+	var resp *user.BaseResponse
+	if err != nil {
+		Log.Errorln("get email code from cache err:", err)
+		resp = &user.BaseResponse{
+			Code: errmsg.Error,
+			Msg:  errmsg.GetMsg(errmsg.Error),
+		}
+	} else {
+		resp = &user.BaseResponse{
+			Code: int32(code),
+			Msg:  errmsg.GetMsg(code),
+		}
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -33,9 +62,16 @@ func Registe(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	var rpcReq *base2.RegisterRequest
+	err = common.BindRpcOption(rpcReq, req)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+		c.JSON(consts.StatusBadRequest, err.Error())
+	}
+	resp, err := base.BaseClient.Registe(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("register err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -49,9 +85,12 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.LoginResponse)
-
+	var rpcReq *base2.LoginRequest
+	common.BindRpcOption(req, rpcReq)
+	resp, err := base.BaseClient.Login(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("login err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -65,9 +104,15 @@ func GetUserById(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.UsersResponse)
-
+	var rpcReq *base2.GetUserByIdRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.GetUserById(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get user by id err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -82,7 +127,16 @@ func GetUserByGid(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(user.UsersResponse)
+	var rpcReq *base2.GetUserByGidRequest
+
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.GetUserByGid(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get user by gid err:", err)
+	}
 
 	c.JSON(consts.StatusOK, resp)
 }
@@ -97,9 +151,15 @@ func ChangeUserAvater(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	var rpcReq *base2.ChangeUserAvaterRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.ChangeUserAvater(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("change user avater err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -113,9 +173,15 @@ func ChangeUserPassword(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	var rpcReq *base2.ChangePasswordRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.ChangeUserPassword(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("change user password err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -129,9 +195,15 @@ func ChangeUserAddress(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	var rpcReq *base2.ChangeAddressRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.ChangeUserAddress(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("change user address err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -145,9 +217,15 @@ func UserDel(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
-	resp := new(user.BaseResponse)
-
+	var rpcReq *base2.UserDelRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
+	resp, err := base.BaseClient.UserDel(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("user del err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -161,8 +239,15 @@ func GetAllUser(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	var rpcReq *base2.GetAllUserRequest
+	err = common.BindRpcOption(req, rpcReq)
+	if err != nil {
+		Log.Errorln("bind rpc option err:", err)
+	}
 
-	resp := new(user.UsersResponse)
-
+	resp, err := base.BaseClient.GetAllUser(ctx, rpcReq)
+	if err != nil {
+		Log.Errorln("get all user err:", err)
+	}
 	c.JSON(consts.StatusOK, resp)
 }
