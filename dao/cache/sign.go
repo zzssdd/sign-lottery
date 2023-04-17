@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/sirupsen/logrus"
 )
 
 type Sign struct {
@@ -70,7 +69,6 @@ func (s *Sign) IpLimit(ctx context.Context, ip string, uid int64) bool {
 	}
 	result, err := cli.Get(ctx, SignIpTag(ip)).Result()
 	if err != nil {
-		logrus.Errorln("ip relate to id err:", err)
 		return false
 	}
 	ip_id, _ := strconv.ParseInt(result, 10, 64)
@@ -123,11 +121,20 @@ func (s *Sign) GetUserMonthRecord(ctx context.Context, uid int64, gid int32, mon
 }
 
 func (s *Sign) StoreUserMonthRecord(ctx context.Context, uid int64, gid int32, bitmap int, month string) error {
-	return cli.Set(ctx, SignUserMonthTag(uid, gid, month), bitmap, -1).Err()
+	err := cli.Set(ctx, SignUserMonthTag(uid, gid, month), bitmap, -1).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, SignUserMonthTag(uid, gid, month), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, SignUserMonthTag(uid, gid, month))
+		return err
+	}
+	return nil
 }
 
-func (s *Sign) UpdateUserMonthRecord(ctx context.Context, uid int64, gid int32, month string, day int) error {
-	return cli.SetBit(ctx, SignUserMonthTag(uid, gid, month), int64(day), 1).Err()
+func (s *Sign) UpdateUserMonthRecord(ctx context.Context, uid int64, gid int32, month string, day int) (int64, error) {
+	return cli.SetBit(ctx, SignUserMonthTag(uid, gid, month), int64(day), 1).Result()
 }
 
 func (s *Sign) ExistUserRecord(ctx context.Context, uid int64, limit int32, offset int32) bool {
@@ -144,9 +151,19 @@ func (s *Sign) StoreUserRecord(ctx context.Context, uid int64, limit int32, offs
 		if err != nil {
 			return err
 		}
+		err = cli.Expire(ctx, RecordUserOffsetTag(uid, offset, limit), time.Hour).Err()
+		if err != nil {
+			cli.Del(ctx, RecordUserOffsetTag(uid, offset, limit))
+			return err
+		}
 		if cli.Exists(ctx, RecordUserTag(v.ID)).Val() != 1 {
 			err = cli.HMSet(ctx, RecordUserTag(v.ID), "gid", v.Gid, "time", v.CreatedAt.Format("2006-01-02 15:04:05")).Err()
 			if err != nil {
+				return err
+			}
+			err = cli.Expire(ctx, RecordUserTag(v.ID), time.Hour).Err()
+			if err != nil {
+				cli.Del(ctx, RecordUserTag(v.ID))
 				return err
 			}
 		}

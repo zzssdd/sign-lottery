@@ -52,7 +52,16 @@ func (p *Prize) GetPrize(ctx context.Context, id int32) (*model.Prize, error) {
 }
 
 func (p *Prize) StorePrize(ctx context.Context, id int32, prize *model.Prize) error {
-	return cli.HMSet(ctx, PrizeTag(id), "create_at", prize.CreatedAt.Format("2006-01-02 15:04:05"), "name", prize.Name, "num", prize.Num, "picture", prize.Picture, "aid", prize.Aid).Err()
+	err := cli.HMSet(ctx, PrizeTag(id), "create_at", prize.CreatedAt.Format("2006-01-02 15:04:05"), "name", prize.Name, "num", prize.Num, "picture", prize.Picture, "aid", prize.Aid).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, PrizeTag(id), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, PrizeTag(id))
+		return err
+	}
+	return nil
 }
 
 func (p *Prize) ExistPrizeByAid(ctx context.Context, id int32) bool {
@@ -63,6 +72,11 @@ func (p *Prize) StorePrizeByAid(ctx context.Context, id int32, prizes []*model.P
 	for _, v := range prizes {
 		err := cli.SAdd(ctx, PrizeByAidTag(id), v.ID).Err()
 		if err != nil {
+			return err
+		}
+		err = cli.Expire(ctx, PrizeByAidTag(id), time.Hour).Err()
+		if err != nil {
+			cli.Del(ctx, PrizeByAidTag(id))
 			return err
 		}
 		err = p.StorePrize(ctx, int32(v.ID), v)
@@ -103,5 +117,9 @@ func (p *Prize) GetPrizeByAid(ctx context.Context, id int32) ([]*model.Prize, er
 }
 
 func (p *Prize) IncrPrize(ctx context.Context, pid int32) error {
-	return cli.HIncrBy(ctx, PrizeTag(pid), "num", -1).Err()
+	err := cli.HIncrBy(ctx, PrizeTag(pid), "num", -1).Err()
+	if err != nil {
+		return err
+	}
+	return cli.Expire(ctx, PrizeTag(pid), time.Hour).Err()
 }

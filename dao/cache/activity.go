@@ -33,8 +33,17 @@ func (a *Activity) ExistActivityInfo(ctx context.Context, id int32) bool {
 }
 
 func (a *Activity) StoreActivityInfo(ctx context.Context, id int32, activity *model.Activity) error {
-	return cli.HMSet(ctx, ActivityInfoTag(id), "create_at", activity.CreatedAt.Format("2006-01-02 15:04:05"), "name", activity.Name, "desc", activity.Des, "picture", activity.Picture, "cost", activity.Cost,
+	err := cli.HMSet(ctx, ActivityInfoTag(id), "create_at", activity.CreatedAt.Format("2006-01-02 15:04:05"), "name", activity.Name, "desc", activity.Des, "picture", activity.Picture, "cost", activity.Cost,
 		"uid", activity.UID, "gid", activity.Gid, "start", activity.Start, "end", activity.End, "num", activity.Num).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, ActivityInfoTag(id), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, ActivityInfoTag(id))
+		return err
+	}
+	return nil
 }
 
 func (a *Activity) ClearActivityInfo(ctx context.Context, id int32) error {
@@ -50,6 +59,11 @@ func (a *Activity) StoreActivityOffset(ctx context.Context, id int32, offset int
 	if err != nil {
 		return err
 	}
+	err = cli.Expire(ctx, ActivityOffsetTag(id), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, ActivityOffsetTag(id))
+		return err
+	}
 	for _, v := range acticitys {
 		if !a.ExistActivityInfo(ctx, int32(v.ID)) {
 			err = a.StoreActivityInfo(ctx, int32(v.ID), v)
@@ -58,6 +72,11 @@ func (a *Activity) StoreActivityOffset(ctx context.Context, id int32, offset int
 			}
 			err = cli.SAdd(ctx, GidOffsetTag(id, offset, limit), v.ID).Err()
 			if err != nil {
+				return err
+			}
+			err = cli.Expire(ctx, GidOffsetTag(id, offset, limit), time.Hour).Err()
+			if err != nil {
+				cli.Del(ctx, GidOffsetTag(id, offset, limit))
 				return err
 			}
 		}
@@ -114,7 +133,16 @@ func (a *Activity) GetActivityOffset(ctx context.Context, id int32, offset int32
 }
 
 func (a *Activity) IncrActivityNum(ctx context.Context, id int32, base int64) error {
-	return cli.HIncrBy(ctx, ActivityInfoTag(id), "num", base).Err()
+	err := cli.HIncrBy(ctx, ActivityInfoTag(id), "num", base).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, ActivityInfoTag(id), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, ActivityInfoTag(id))
+		return err
+	}
+	return nil
 }
 
 func (a *Activity) CheckActivityNum(ctx context.Context, id int32) bool {

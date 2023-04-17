@@ -12,16 +12,11 @@ type Order struct {
 
 const (
 	OrderByUserPreffix = "order:user:"
-	OrderAllPreffix    = "order:all:"
 	OrderPreffix       = "order:"
 )
 
 func OrderByUserTag(id int64, offset int32, limit int32) string {
 	return OrderByUserPreffix + strconv.FormatInt(id, 10) + ":" + strconv.Itoa(int(offset)) + ":" + strconv.Itoa(int(limit))
-}
-
-func OrderAllTag(offset int32, limit int32) string {
-	return OrderAllPreffix + strconv.Itoa(int(offset)) + ":" + strconv.Itoa(int(limit))
 }
 
 func OrderTag(id int64) string {
@@ -33,7 +28,16 @@ func (o *Order) ExistOrderByUser(ctx context.Context, id int64, offset int32, li
 }
 
 func (o *Order) StoreOrder(ctx context.Context, id int64, order *model.UserOrder) error {
-	return cli.HMSet(ctx, OrderTag(id), "id", order.ID, "created_at", order.CreatedAt.Format("2006-01-02 15:04:05"), "uid", order.UID, "pid", order.Pid).Err()
+	err := cli.HMSet(ctx, OrderTag(id), "id", order.ID, "created_at", order.CreatedAt.Format("2006-01-02 15:04:05"), "uid", order.UID, "pid", order.Pid).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, OrderTag(id), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, OrderTag(id))
+		return err
+	}
+	return nil
 }
 
 func (o *Order) GetOrderById(ctx context.Context, id int64) (*model.UserOrder, error) {
@@ -62,6 +66,11 @@ func (o *Order) StoreOrderByUser(ctx context.Context, id int64, offset int32, li
 	for _, v := range orders {
 		err := cli.SAdd(ctx, OrderByUserTag(id, offset, limit), v.ID).Err()
 		if err != nil {
+			return err
+		}
+		err = cli.Expire(ctx, OrderByUserTag(id, offset, limit), time.Hour).Err()
+		if err != nil {
+			cli.Del(ctx, OrderByUserTag(id, offset, limit))
 			return err
 		}
 		if !o.ExistOrder(ctx, v.ID) {

@@ -92,7 +92,16 @@ func (u *User) StoreUserInfo(ctx context.Context, id int64, info *model.User) er
 		"name":      info.Name,
 		"avater":    info.Avater,
 	}
-	return cli.HMSet(ctx, UserInfoTag(id), v).Err()
+	err := cli.HMSet(ctx, UserInfoTag(id), v).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, UserInfoTag(id), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, UserInfoTag(id))
+		return err
+	}
+	return nil
 }
 
 func (u *User) StoreUsersInfo(ctx context.Context, users []*model.User) (err error) {
@@ -105,6 +114,11 @@ func (u *User) StoreUsersInfo(ctx context.Context, users []*model.User) (err err
 		}
 		err = cli.HMSet(ctx, UserInfoTag(v.ID), value).Err()
 		if err != nil {
+			break
+		}
+		err = cli.Expire(ctx, UserInfoTag(v.ID), time.Hour).Err()
+		if err != nil {
+			cli.Del(ctx, UserInfoTag(v.ID))
 			break
 		}
 	}
@@ -124,7 +138,16 @@ func (u *User) GetLoginInfo(ctx context.Context, email string) map[string]string
 }
 
 func (u *User) StoreLoginInfo(ctx context.Context, id int64, email string, password string) error {
-	return cli.HMSet(ctx, LoginTag(email), "id", id, "password", password).Err()
+	err := cli.HMSet(ctx, LoginTag(email), "id", id, "password", password).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, LoginTag(email), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, LoginTag(email))
+		return err
+	}
+	return nil
 }
 
 func (u *User) ClearLoginInfo(ctx context.Context, email string) error {

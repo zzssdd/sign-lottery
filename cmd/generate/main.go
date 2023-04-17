@@ -75,4 +75,5 @@ func main() {
 	fieldOpts := []gen.ModelOpt{jsonField, autoCreateTimeField, autoUpdateTimeField, softDeleteField}
 	// 创建全部模型文件, 并覆盖前面创建的同名模型
 	g.GenerateAllTable(fieldOpts...)
+	g.Execute()
 }

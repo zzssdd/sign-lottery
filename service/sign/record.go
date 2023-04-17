@@ -182,15 +182,19 @@ func (s *SignServiceImpl) HandleSuccessSign(ctx context.Context) error {
 		month := time.Now().Format("2006-01-02")
 		day := time.Now().Day()
 		if !s.cache.Sign.ExistUserMonthRecord(ctx, uid, gid, month) {
-			bitmap, _ := s.dao.Sign.GetMonthSign(ctx, uid, gid, month)
+			bitmap, err := s.dao.Sign.GetMonthSign(ctx, uid, gid, month)
+			if err != nil {
+				Log.Errorln("get month sign from db err:", err)
+				return err
+			}
 			s.cache.Sign.StoreUserMonthRecord(ctx, uid, gid, bitmap, month)
 		}
-		err = s.cache.Sign.UpdateUserMonthRecord(ctx, uid, gid, month, day)
+		bitmap, err := s.cache.Sign.UpdateUserMonthRecord(ctx, uid, gid, month, day)
 		if err != nil {
 			Log.Errorln("update user month record err:", err)
 			continue
 		}
-		err = s.dao.Record.DoRecord(ctx, uid, gid, month, day)
+		err = s.dao.Record.DoRecord(ctx, uid, gid, month, int(bitmap))
 		if err != nil {
 			Log.Errorln("store sign to db err:", err)
 			continue

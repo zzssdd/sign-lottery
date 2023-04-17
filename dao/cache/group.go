@@ -46,7 +46,16 @@ func (g *Group) GroupInfoExist(ctx context.Context, id int32) bool {
 }
 
 func (g *Group) StoreGroupInfo(ctx context.Context, groupInfo *model.SignGroup) error {
-	return cli.HMSet(ctx, GroupInfoTag(int32(groupInfo.ID)), "name", groupInfo.Name, "created_at", groupInfo.CreatedAt, "start", groupInfo.Start, "end", groupInfo.End, "count", groupInfo.Count, "avater", groupInfo.Avater, "owner", groupInfo.Owner).Err()
+	err := cli.HMSet(ctx, GroupInfoTag(int32(groupInfo.ID)), "name", groupInfo.Name, "created_at", groupInfo.CreatedAt, "start", groupInfo.Start, "end", groupInfo.End, "count", groupInfo.Count, "avater", groupInfo.Avater, "owner", groupInfo.Owner).Err()
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, GroupInfoTag(int32(groupInfo.ID)), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, GroupInfoTag(int32(groupInfo.ID)))
+		return err
+	}
+	return nil
 }
 
 func (g *Group) ClearGroupInfo(ctx context.Context, id int32) error {
@@ -82,7 +91,14 @@ func (g *Group) StoreGroupOffset(ctx context.Context, gid, offset, limit int32, 
 KEYS[4],ARGV[3],KEYS[5],ARGV[4],KEYS[6],ARGV[5],KEYS[7],ARGV[6],KEYS[8],ARGV[7],KEYS[9],ARGV[8]) and redis.call('sadd',KEYS[10],ARGV[9]) and redis.call('expire',KEYS[1],1000) end`
 	err = cli.Eval(ctx, script, []string{GroupInfoTag(gid), "id", "name", "created_at", "start", "end", "count", "avater", "owner", GroupOffsetPreffix},
 		gid, groupInfo.Name, groupInfo.CreatedAt, groupInfo.Start, groupInfo.End, groupInfo.Count, groupInfo.Avater, groupInfo.Owner, GroupOffsetTag(gid, offset, limit)).Err()
-	return err
+	if err != nil {
+		return err
+	}
+	err = cli.Expire(ctx, GroupInfoTag(gid), time.Hour).Err()
+	if err != nil {
+		cli.Del(ctx, GroupInfoTag(gid))
+	}
+	return nil
 }
 
 func (g *Group) GroupOffsetExist(ctx context.Context, gid int32, offset int32, limit int32) bool {

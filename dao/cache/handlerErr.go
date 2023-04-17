@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"strconv"
+	"time"
 )
 
 type HandlerErr struct {
@@ -39,15 +40,15 @@ func (r *HandlerErr) ExistChooseErr(ctx context.Context, uid int64, gid int32) b
 }
 
 func (r *HandlerErr) ReturnEmailErr(ctx context.Context, email string, code int) error {
-	return cli.Set(ctx, EmailErrTag(email), code, -1).Err()
+	return cli.Set(ctx, EmailErrTag(email), code, time.Hour).Err()
 }
 
 func (r *HandlerErr) ReturnSignErr(ctx context.Context, uid int64, gid int32, code int) error {
-	return cli.Set(ctx, SignErrTag(uid, gid), code, -1).Err()
+	return cli.Set(ctx, SignErrTag(uid, gid), code, time.Hour).Err()
 }
 
 func (r *HandlerErr) ReturnChooseErr(ctx context.Context, uid int64, aid int32, prizeName string) error {
-	return cli.Set(ctx, ChooseErrTag(uid, aid), prizeName, -1).Err()
+	return cli.Set(ctx, ChooseErrTag(uid, aid), prizeName, time.Hour).Err()
 }
 
 func (r *HandlerErr) GetEmailErr(ctx context.Context, email string) (int, error) {
