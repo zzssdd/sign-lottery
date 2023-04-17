@@ -16,6 +16,12 @@ func (a *Activity) ActivityDel(ctx context.Context, id int32) error {
 	return db.WithContext(ctx).Delete(&model.Activity{}, id).Error
 }
 
+func (a *Activity) CheckActivityPrevilege(ctx context.Context, uid int64, aid int32) bool {
+	var count int64
+	err := db.WithContext(ctx).Model(&model.Activity{}).Where("uid=? AND id=?", uid, aid).Count(&count).Error
+	return count > 0 && err == nil
+}
+
 func (a *Activity) ActivityUpdate(ctx context.Context, id int32, activity *model.Activity) error {
 	return db.WithContext(ctx).Where("id=?", id).Updates(activity).Error
 }

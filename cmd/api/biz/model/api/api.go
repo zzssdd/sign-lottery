@@ -6,9 +6,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/thrift/lib/go/thrift"
-	"sign-lottery/cmd/api/biz/model/lottery"
-	"sign-lottery/cmd/api/biz/model/sign"
-	"sign-lottery/cmd/api/biz/model/user"
+	"sign-lottery/biz/model/lottery"
+	"sign-lottery/biz/model/sign"
+	"sign-lottery/biz/model/user"
 )
 
 type SignLotteryApi interface {

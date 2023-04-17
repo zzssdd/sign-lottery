@@ -81,16 +81,16 @@ func (s *Sign) IpLimitAdd(ctx context.Context, ip string, uid int64) error {
 	return cli.Set(ctx, SignIpTag(ip), uid, 24*time.Hour).Err()
 }
 
+func (s *Sign) ExistSignStart(ctx context.Context, uid int64, gid int32) bool {
+	return cli.Exists(ctx, SignGroupStartTag(gid), strconv.FormatInt(uid, 10)).Val() == 1
+}
+
 func (s *Sign) UserSignStart(ctx context.Context, uid int64, gid int32) error {
 	return cli.SAdd(ctx, SignGroupStartTag(gid), uid).Err()
 }
 
 func (s *Sign) UserSignEnd(ctx context.Context, uid int64, gid int32) error {
 	return cli.SAdd(ctx, SignGroupEndTag(gid), uid).Err()
-}
-
-func (s *Sign) UpdateUserMonthRecord(ctx context.Context, uid int64, gid int32, month string) error {
-	return nil
 }
 
 func (s *Sign) ExistPos(ctx context.Context, gid int32) bool {
@@ -124,6 +124,10 @@ func (s *Sign) GetUserMonthRecord(ctx context.Context, uid int64, gid int32, mon
 
 func (s *Sign) StoreUserMonthRecord(ctx context.Context, uid int64, gid int32, bitmap int, month string) error {
 	return cli.Set(ctx, SignUserMonthTag(uid, gid, month), bitmap, -1).Err()
+}
+
+func (s *Sign) UpdateUserMonthRecord(ctx context.Context, uid int64, gid int32, month string, day int) error {
+	return cli.SetBit(ctx, SignUserMonthTag(uid, gid, month), int64(day), 1).Err()
 }
 
 func (s *Sign) ExistUserRecord(ctx context.Context, uid int64, limit int32, offset int32) bool {

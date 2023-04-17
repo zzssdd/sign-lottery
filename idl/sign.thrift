@@ -72,11 +72,13 @@ struct SignPosAddRequest{
     2:required string name
     3:required double longtitude
     4:required double latitude
+    5:required i64 uid
 }
 
 struct SignPosDelRequest{
     1:required i32 gid
     2:required string name
+    3:required i64 uid
 }
 
 struct GetSignPosRequest{

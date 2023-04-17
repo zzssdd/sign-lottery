@@ -24,6 +24,13 @@ func Choose(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = &id
 	Cache := cache.NewCache()
 	Db := db.NewDao()
 	var resp *lottery.ChooseResponse
@@ -41,8 +48,7 @@ func Choose(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 	}
-	now := time.Now()
-	is_ok := Cache.Activity.CheckActivity(ctx, req.Aid, now)
+	is_ok := Cache.Activity.CheckActivityNum(ctx, req.Aid)
 	if !is_ok {
 		resp = &lottery.ChooseResponse{
 			Resp: &lottery.BaseResponse{
@@ -50,30 +56,45 @@ func Choose(ctx context.Context, c *app.RequestContext) {
 				Msg:  errmsg.GetMsg(errmsg.PrizeIsNull),
 			},
 		}
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	now := time.Now()
+	is_ok = Cache.Activity.CheckActivityTime(ctx, req.Aid, now)
+	if !is_ok {
+		resp = &lottery.ChooseResponse{
+			Resp: &lottery.BaseResponse{
+				Code: errmsg.NotInActivityTime,
+				Msg:  errmsg.GetMsg(errmsg.NotInActivityTime),
+			},
+		}
+		c.JSON(consts.StatusOK, resp)
+		return
 	}
 	choose := &model2.Choose{
-		Uid: *req.UID,
+		Uid: id,
 		Aid: req.Aid,
 	}
 	err = producer.NewProcuer().Choose.ProducerChoose(choose)
 	if err != nil {
+		Log.Errorln("produce choose request to rabbitmq err:", err)
 		resp = &lottery.ChooseResponse{
 			Resp: &lottery.BaseResponse{
 				Code: errmsg.Error,
 				Msg:  errmsg.GetMsg(errmsg.Error),
 			},
 		}
+		c.JSON(consts.StatusOK, resp)
+		return
 	}
 	for !Cache.HandlerErr.ExistChooseErr(ctx, *req.UID, req.Aid) {
 		time.Sleep(time.Second)
 	}
 	prizeName, err := Cache.HandlerErr.GetChooseErr(ctx, *req.UID, req.Aid)
 	if err != nil {
-		if err != nil {
-			Log.Errorln("get code from cache err:", err)
-			c.String(consts.StatusBadRequest, err.Error())
-			return
-		}
+		Log.Errorln("get code from cache err:", err)
+		c.String(consts.StatusBadRequest, err.Error())
+		return
 	}
 	resp = &lottery.ChooseResponse{
 		Resp: &lottery.BaseResponse{

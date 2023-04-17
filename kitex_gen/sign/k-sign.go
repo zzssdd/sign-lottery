@@ -2832,6 +2832,7 @@ func (p *SignPosAddRequest) FastRead(buf []byte) (int, error) {
 	var issetName bool = false
 	var issetLongtitude bool = false
 	var issetLatitude bool = false
+	var issetUid bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -2908,6 +2909,21 @@ func (p *SignPosAddRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 5:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField5(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -2945,6 +2961,11 @@ func (p *SignPosAddRequest) FastRead(buf []byte) (int, error) {
 
 	if !issetLatitude {
 		fieldId = 4
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 5
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -3020,6 +3041,20 @@ func (p *SignPosAddRequest) FastReadField4(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *SignPosAddRequest) FastReadField5(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.Uid = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *SignPosAddRequest) FastWrite(buf []byte) int {
 	return 0
@@ -3032,6 +3067,7 @@ func (p *SignPosAddRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bin
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
+		offset += p.fastWriteField5(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
@@ -3047,6 +3083,7 @@ func (p *SignPosAddRequest) BLength() int {
 		l += p.field2Length()
 		l += p.field3Length()
 		l += p.field4Length()
+		l += p.field5Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -3089,6 +3126,15 @@ func (p *SignPosAddRequest) fastWriteField4(buf []byte, binaryWriter bthrift.Bin
 	return offset
 }
 
+func (p *SignPosAddRequest) fastWriteField5(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "uid", thrift.I64, 5)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.Uid)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *SignPosAddRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("gid", thrift.I32, 1)
@@ -3125,6 +3171,15 @@ func (p *SignPosAddRequest) field4Length() int {
 	return l
 }
 
+func (p *SignPosAddRequest) field5Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("uid", thrift.I64, 5)
+	l += bthrift.Binary.I64Length(p.Uid)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
 func (p *SignPosDelRequest) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
@@ -3133,6 +3188,7 @@ func (p *SignPosDelRequest) FastRead(buf []byte) (int, error) {
 	var fieldId int16
 	var issetGid bool = false
 	var issetName bool = false
+	var issetUid bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -3179,6 +3235,21 @@ func (p *SignPosDelRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField3(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -3206,6 +3277,11 @@ func (p *SignPosDelRequest) FastRead(buf []byte) (int, error) {
 
 	if !issetName {
 		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -3253,6 +3329,20 @@ func (p *SignPosDelRequest) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *SignPosDelRequest) FastReadField3(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.Uid = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *SignPosDelRequest) FastWrite(buf []byte) int {
 	return 0
@@ -3263,6 +3353,7 @@ func (p *SignPosDelRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bin
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "SignPosDelRequest")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
+		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
@@ -3276,6 +3367,7 @@ func (p *SignPosDelRequest) BLength() int {
 	if p != nil {
 		l += p.field1Length()
 		l += p.field2Length()
+		l += p.field3Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -3300,6 +3392,15 @@ func (p *SignPosDelRequest) fastWriteField2(buf []byte, binaryWriter bthrift.Bin
 	return offset
 }
 
+func (p *SignPosDelRequest) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "uid", thrift.I64, 3)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.Uid)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *SignPosDelRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("gid", thrift.I32, 1)
@@ -3313,6 +3414,15 @@ func (p *SignPosDelRequest) field2Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("name", thrift.STRING, 2)
 	l += bthrift.Binary.StringLengthNocopy(p.Name)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *SignPosDelRequest) field3Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("uid", thrift.I64, 3)
+	l += bthrift.Binary.I64Length(p.Uid)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

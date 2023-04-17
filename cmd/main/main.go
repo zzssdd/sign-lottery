@@ -21,7 +21,6 @@ func main() {
 		h := server.Default()
 		router.GeneratedRegister(h)
 		h.Spin()
-		break
 	case constants.BaseServiceName:
 		base.BaseServer()
 	case constants.SignServiceName:

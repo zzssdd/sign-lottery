@@ -2915,6 +2915,7 @@ type SignPosAddRequest struct {
 	Name       string  `thrift:"name,2,required" form:"name,required" json:"name,required" query:"name,required"`
 	Longtitude float64 `thrift:"longtitude,3,required" form:"longtitude,required" json:"longtitude,required" query:"longtitude,required"`
 	Latitude   float64 `thrift:"latitude,4,required" form:"latitude,required" json:"latitude,required" query:"latitude,required"`
+	UID        int64   `thrift:"uid,5,required" form:"uid,required" json:"uid,required" query:"uid,required"`
 }
 
 func NewSignPosAddRequest() *SignPosAddRequest {
@@ -2937,11 +2938,16 @@ func (p *SignPosAddRequest) GetLatitude() (v float64) {
 	return p.Latitude
 }
 
+func (p *SignPosAddRequest) GetUID() (v int64) {
+	return p.UID
+}
+
 var fieldIDToName_SignPosAddRequest = map[int16]string{
 	1: "gid",
 	2: "name",
 	3: "longtitude",
 	4: "latitude",
+	5: "uid",
 }
 
 func (p *SignPosAddRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -2952,6 +2958,7 @@ func (p *SignPosAddRequest) Read(iprot thrift.TProtocol) (err error) {
 	var issetName bool = false
 	var issetLongtitude bool = false
 	var issetLatitude bool = false
+	var issetUID bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -3011,6 +3018,17 @@ func (p *SignPosAddRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 5:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUID = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -3042,6 +3060,11 @@ func (p *SignPosAddRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetLatitude {
 		fieldId = 4
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUID {
+		fieldId = 5
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -3098,6 +3121,15 @@ func (p *SignPosAddRequest) ReadField4(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *SignPosAddRequest) ReadField5(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UID = v
+	}
+	return nil
+}
+
 func (p *SignPosAddRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("SignPosAddRequest"); err != nil {
@@ -3118,6 +3150,10 @@ func (p *SignPosAddRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField4(oprot); err != nil {
 			fieldId = 4
+			goto WriteFieldError
+		}
+		if err = p.writeField5(oprot); err != nil {
+			fieldId = 5
 			goto WriteFieldError
 		}
 
@@ -3207,6 +3243,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
 }
 
+func (p *SignPosAddRequest) writeField5(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 5); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
+}
+
 func (p *SignPosAddRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -3217,6 +3270,7 @@ func (p *SignPosAddRequest) String() string {
 type SignPosDelRequest struct {
 	Gid  int32  `thrift:"gid,1,required" form:"gid,required" json:"gid,required" query:"gid,required"`
 	Name string `thrift:"name,2,required" form:"name,required" json:"name,required" query:"name,required"`
+	UID  int64  `thrift:"uid,3,required" form:"uid,required" json:"uid,required" query:"uid,required"`
 }
 
 func NewSignPosDelRequest() *SignPosDelRequest {
@@ -3231,9 +3285,14 @@ func (p *SignPosDelRequest) GetName() (v string) {
 	return p.Name
 }
 
+func (p *SignPosDelRequest) GetUID() (v int64) {
+	return p.UID
+}
+
 var fieldIDToName_SignPosDelRequest = map[int16]string{
 	1: "gid",
 	2: "name",
+	3: "uid",
 }
 
 func (p *SignPosDelRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -3242,6 +3301,7 @@ func (p *SignPosDelRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	var issetGid bool = false
 	var issetName bool = false
+	var issetUID bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -3279,6 +3339,17 @@ func (p *SignPosDelRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUID = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -3300,6 +3371,11 @@ func (p *SignPosDelRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetName {
 		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUID {
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -3338,6 +3414,15 @@ func (p *SignPosDelRequest) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *SignPosDelRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UID = v
+	}
+	return nil
+}
+
 func (p *SignPosDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("SignPosDelRequest"); err != nil {
@@ -3350,6 +3435,10 @@ func (p *SignPosDelRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -3403,6 +3492,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *SignPosDelRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
 func (p *SignPosDelRequest) String() string {

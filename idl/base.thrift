@@ -140,6 +140,7 @@ struct GroupUpdateRequest{
     4:required string end
     5:required string avater
     6:required i64 owner
+    7:required i64 uid
 }
 
 struct UserDelRequest{
@@ -148,6 +149,7 @@ struct UserDelRequest{
 
 struct GroupDelRequest{
     1:required i32 id
+    2:required i64 uid
 }
 
 service BaseService{

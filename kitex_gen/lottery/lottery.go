@@ -2868,7 +2868,8 @@ func (p *ActivityUpdateRequest) Field9DeepEqual(src string) bool {
 }
 
 type ActivityDelRequest struct {
-	Id int32 `thrift:"id,1,required" frugal:"1,required,i32" json:"id"`
+	Id  int32 `thrift:"id,1,required" frugal:"1,required,i32" json:"id"`
+	Uid int64 `thrift:"uid,2,required" frugal:"2,required,i64" json:"uid"`
 }
 
 func NewActivityDelRequest() *ActivityDelRequest {
@@ -2882,12 +2883,20 @@ func (p *ActivityDelRequest) InitDefault() {
 func (p *ActivityDelRequest) GetId() (v int32) {
 	return p.Id
 }
+
+func (p *ActivityDelRequest) GetUid() (v int64) {
+	return p.Uid
+}
 func (p *ActivityDelRequest) SetId(val int32) {
 	p.Id = val
+}
+func (p *ActivityDelRequest) SetUid(val int64) {
+	p.Uid = val
 }
 
 var fieldIDToName_ActivityDelRequest = map[int16]string{
 	1: "id",
+	2: "uid",
 }
 
 func (p *ActivityDelRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -2895,6 +2904,7 @@ func (p *ActivityDelRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetId bool = false
+	var issetUid bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2921,6 +2931,17 @@ func (p *ActivityDelRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -2937,6 +2958,11 @@ func (p *ActivityDelRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetId {
 		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -2966,6 +2992,15 @@ func (p *ActivityDelRequest) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *ActivityDelRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.Uid = v
+	}
+	return nil
+}
+
 func (p *ActivityDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("ActivityDelRequest"); err != nil {
@@ -2974,6 +3009,10 @@ func (p *ActivityDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -3012,6 +3051,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
+func (p *ActivityDelRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Uid); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
 func (p *ActivityDelRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -3028,12 +3084,22 @@ func (p *ActivityDelRequest) DeepEqual(ano *ActivityDelRequest) bool {
 	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
+	if !p.Field2DeepEqual(ano.Uid) {
+		return false
+	}
 	return true
 }
 
 func (p *ActivityDelRequest) Field1DeepEqual(src int32) bool {
 
 	if p.Id != src {
+		return false
+	}
+	return true
+}
+func (p *ActivityDelRequest) Field2DeepEqual(src int64) bool {
+
+	if p.Uid != src {
 		return false
 	}
 	return true
@@ -4715,7 +4781,8 @@ func (p *PrizeAddRequest) Field4DeepEqual(src int32) bool {
 }
 
 type PrizeDelRequest struct {
-	Id int32 `thrift:"id,1,required" frugal:"1,required,i32" json:"id"`
+	Id  int32 `thrift:"id,1,required" frugal:"1,required,i32" json:"id"`
+	Uid int64 `thrift:"uid,2,required" frugal:"2,required,i64" json:"uid"`
 }
 
 func NewPrizeDelRequest() *PrizeDelRequest {
@@ -4729,12 +4796,20 @@ func (p *PrizeDelRequest) InitDefault() {
 func (p *PrizeDelRequest) GetId() (v int32) {
 	return p.Id
 }
+
+func (p *PrizeDelRequest) GetUid() (v int64) {
+	return p.Uid
+}
 func (p *PrizeDelRequest) SetId(val int32) {
 	p.Id = val
+}
+func (p *PrizeDelRequest) SetUid(val int64) {
+	p.Uid = val
 }
 
 var fieldIDToName_PrizeDelRequest = map[int16]string{
 	1: "id",
+	2: "uid",
 }
 
 func (p *PrizeDelRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -4742,6 +4817,7 @@ func (p *PrizeDelRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetId bool = false
+	var issetUid bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -4768,6 +4844,17 @@ func (p *PrizeDelRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -4784,6 +4871,11 @@ func (p *PrizeDelRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetId {
 		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -4813,6 +4905,15 @@ func (p *PrizeDelRequest) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *PrizeDelRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.Uid = v
+	}
+	return nil
+}
+
 func (p *PrizeDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("PrizeDelRequest"); err != nil {
@@ -4821,6 +4922,10 @@ func (p *PrizeDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -4859,6 +4964,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
+func (p *PrizeDelRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Uid); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
 func (p *PrizeDelRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -4875,12 +4997,22 @@ func (p *PrizeDelRequest) DeepEqual(ano *PrizeDelRequest) bool {
 	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
+	if !p.Field2DeepEqual(ano.Uid) {
+		return false
+	}
 	return true
 }
 
 func (p *PrizeDelRequest) Field1DeepEqual(src int32) bool {
 
 	if p.Id != src {
+		return false
+	}
+	return true
+}
+func (p *PrizeDelRequest) Field2DeepEqual(src int64) bool {
+
+	if p.Uid != src {
 		return false
 	}
 	return true
@@ -4892,6 +5024,7 @@ type PrizeUpdateRequest struct {
 	Num     int64  `thrift:"num,3,required" frugal:"3,required,i64" json:"num"`
 	Picture string `thrift:"picture,4,required" frugal:"4,required,string" json:"picture"`
 	Aid     int32  `thrift:"aid,5,required" frugal:"5,required,i32" json:"aid"`
+	Uid     int64  `thrift:"uid,6,required" frugal:"6,required,i64" json:"uid"`
 }
 
 func NewPrizeUpdateRequest() *PrizeUpdateRequest {
@@ -4921,6 +5054,10 @@ func (p *PrizeUpdateRequest) GetPicture() (v string) {
 func (p *PrizeUpdateRequest) GetAid() (v int32) {
 	return p.Aid
 }
+
+func (p *PrizeUpdateRequest) GetUid() (v int64) {
+	return p.Uid
+}
 func (p *PrizeUpdateRequest) SetId(val int32) {
 	p.Id = val
 }
@@ -4936,6 +5073,9 @@ func (p *PrizeUpdateRequest) SetPicture(val string) {
 func (p *PrizeUpdateRequest) SetAid(val int32) {
 	p.Aid = val
 }
+func (p *PrizeUpdateRequest) SetUid(val int64) {
+	p.Uid = val
+}
 
 var fieldIDToName_PrizeUpdateRequest = map[int16]string{
 	1: "id",
@@ -4943,6 +5083,7 @@ var fieldIDToName_PrizeUpdateRequest = map[int16]string{
 	3: "num",
 	4: "picture",
 	5: "aid",
+	6: "uid",
 }
 
 func (p *PrizeUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -4954,6 +5095,7 @@ func (p *PrizeUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 	var issetNum bool = false
 	var issetPicture bool = false
 	var issetAid bool = false
+	var issetUid bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -5024,6 +5166,17 @@ func (p *PrizeUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 6:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField6(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -5060,6 +5213,11 @@ func (p *PrizeUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetAid {
 		fieldId = 5
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 6
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -5125,6 +5283,15 @@ func (p *PrizeUpdateRequest) ReadField5(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *PrizeUpdateRequest) ReadField6(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.Uid = v
+	}
+	return nil
+}
+
 func (p *PrizeUpdateRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("PrizeUpdateRequest"); err != nil {
@@ -5149,6 +5316,10 @@ func (p *PrizeUpdateRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField5(oprot); err != nil {
 			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
 			goto WriteFieldError
 		}
 
@@ -5255,6 +5426,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
 }
 
+func (p *PrizeUpdateRequest) writeField6(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 6); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Uid); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
 func (p *PrizeUpdateRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -5281,6 +5469,9 @@ func (p *PrizeUpdateRequest) DeepEqual(ano *PrizeUpdateRequest) bool {
 		return false
 	}
 	if !p.Field5DeepEqual(ano.Aid) {
+		return false
+	}
+	if !p.Field6DeepEqual(ano.Uid) {
 		return false
 	}
 	return true
@@ -5317,6 +5508,13 @@ func (p *PrizeUpdateRequest) Field4DeepEqual(src string) bool {
 func (p *PrizeUpdateRequest) Field5DeepEqual(src int32) bool {
 
 	if p.Aid != src {
+		return false
+	}
+	return true
+}
+func (p *PrizeUpdateRequest) Field6DeepEqual(src int64) bool {
+
+	if p.Uid != src {
 		return false
 	}
 	return true

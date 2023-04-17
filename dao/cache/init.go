@@ -16,6 +16,7 @@ type Cache struct {
 	Prize      Prize
 	Order      Order
 	HandlerErr HandlerErr
+	Ip         IpLimit
 }
 
 func NewCache() *Cache {
@@ -34,5 +35,6 @@ func NewCache() *Cache {
 		Prize:      Prize{},
 		Order:      Order{},
 		HandlerErr: HandlerErr{},
+		Ip:         IpLimit{},
 	}
 }

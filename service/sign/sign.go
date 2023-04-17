@@ -8,6 +8,7 @@ import (
 	. "sign-lottery/pkg/log"
 	"sign-lottery/rabbitmq/consumer"
 	model2 "sign-lottery/rabbitmq/model"
+	"sign-lottery/rabbitmq/producer"
 	"time"
 )
 
@@ -19,6 +20,7 @@ func (s *SignServiceImpl) Sign(ctx context.Context) (resp *sign.BaseResponse, er
 	if err != nil {
 		Log.Fatalln("create consumer err:", err)
 	}
+	signProducer := producer.NewProcuer()
 	for signInfo := range signChan {
 		uid := signInfo.Uid
 		gid := signInfo.Gid
@@ -74,6 +76,19 @@ func (s *SignServiceImpl) Sign(ctx context.Context) (resp *sign.BaseResponse, er
 				err = s.cache.Sign.UserSignStart(ctx, uid, gid)
 			} else if now.After(group.End) {
 				err = s.cache.Sign.UserSignEnd(ctx, uid, gid)
+				if err == nil {
+					if s.cache.Sign.ExistSignStart(ctx, uid, gid) {
+						record := &model2.Record{
+							Uid: uid,
+							Gid: gid,
+						}
+						err = signProducer.Record.ProducerRecord(record)
+						if err != nil {
+							Log.Errorln("produce record into rabbitmq err:", err)
+							continue
+						}
+					}
+				}
 			} else {
 				err2 := s.cache.HandlerErr.ReturnSignErr(ctx, uid, gid, errmsg.SignNotInTime)
 				if err2 != nil {

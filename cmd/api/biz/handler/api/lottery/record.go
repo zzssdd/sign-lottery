@@ -21,6 +21,13 @@ func GetUserOrder(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = &id
 	var rpcReq *lottery2.GetUserOrderRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {

@@ -32,6 +32,12 @@ func (g *Group) GroupUpdate(ctx context.Context, id int32, group *model.SignGrou
 	return db.WithContext(ctx).Model(&model.SignGroup{}).Where("id=?", id).Updates(group).Error
 }
 
+func (g *Group) CheckGroupPrevilege(ctx context.Context, uid int64, gid int32) bool {
+	var count int64
+	err := db.WithContext(ctx).Model(&model.SignGroup{}).Where("id=? AND owner=?", gid, uid).Count(&count).Error
+	return count > 0 && err == nil
+}
+
 func (g *Group) GroupDel(ctx context.Context, id int32) error {
 	return db.WithContext(ctx).Delete(&model.SignGroup{}, id).Error
 }

@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	. "sign-lottery/pkg/log"
 	"time"
 
@@ -11,20 +12,20 @@ var Secret = []byte("fe2fsaw3")
 var AdminSecret = []byte("asdawer2")
 
 type MyClaims struct {
-	id    int64  `json:"id"`
-	email string `json:"name"`
+	Id    int64  `json:"id"`
+	Email string `json:"name"`
 	jwt.StandardClaims
 }
 
 type AdminClaims struct {
-	name string `json:"name"`
+	Name string `json:"name"`
 	jwt.StandardClaims
 }
 
 func GenToken(id int64, email string) (token string, err error) {
 	claim := &MyClaims{
-		id:    id,
-		email: email,
+		Id:    id,
+		Email: email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(2 * time.Hour).Unix(),
 			Issuer:    "yogen",
@@ -40,7 +41,7 @@ func GenToken(id int64, email string) (token string, err error) {
 
 func GenAdminToken(name string) (token string, err error) {
 	claim := &AdminClaims{
-		name: name,
+		Name: name,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(2 * time.Hour).Unix(),
 			Issuer:    "yogen-admin",
@@ -52,4 +53,30 @@ func GenAdminToken(name string) (token string, err error) {
 		Log.Errorln("signed token err:", err)
 	}
 	return
+}
+
+func ParseUserToken(tokenString string) (*MyClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return Secret, nil
+	})
+	if err != nil || token == nil {
+		return nil, err
+	}
+	if claim, ok := token.Claims.(*MyClaims); ok && token.Valid {
+		return claim, nil
+	}
+	return nil, fmt.Errorf("token不合法")
+}
+
+func ParseAdminToken(tokenString string) (*AdminClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return AdminSecret, nil
+	})
+	if err != nil || token == nil {
+		return nil, err
+	}
+	if claim, ok := token.Claims.(*AdminClaims); ok && token.Valid {
+		return claim, nil
+	}
+	return nil, fmt.Errorf("token不合法")
 }

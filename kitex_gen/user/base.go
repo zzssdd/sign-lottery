@@ -6639,6 +6639,7 @@ type GroupUpdateRequest struct {
 	End    string `thrift:"end,4,required" frugal:"4,required,string" json:"end"`
 	Avater string `thrift:"avater,5,required" frugal:"5,required,string" json:"avater"`
 	Owner  int64  `thrift:"owner,6,required" frugal:"6,required,i64" json:"owner"`
+	Uid    int64  `thrift:"uid,7,required" frugal:"7,required,i64" json:"uid"`
 }
 
 func NewGroupUpdateRequest() *GroupUpdateRequest {
@@ -6672,6 +6673,10 @@ func (p *GroupUpdateRequest) GetAvater() (v string) {
 func (p *GroupUpdateRequest) GetOwner() (v int64) {
 	return p.Owner
 }
+
+func (p *GroupUpdateRequest) GetUid() (v int64) {
+	return p.Uid
+}
 func (p *GroupUpdateRequest) SetId(val int32) {
 	p.Id = val
 }
@@ -6690,6 +6695,9 @@ func (p *GroupUpdateRequest) SetAvater(val string) {
 func (p *GroupUpdateRequest) SetOwner(val int64) {
 	p.Owner = val
 }
+func (p *GroupUpdateRequest) SetUid(val int64) {
+	p.Uid = val
+}
 
 var fieldIDToName_GroupUpdateRequest = map[int16]string{
 	1: "id",
@@ -6698,6 +6706,7 @@ var fieldIDToName_GroupUpdateRequest = map[int16]string{
 	4: "end",
 	5: "avater",
 	6: "owner",
+	7: "uid",
 }
 
 func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -6710,6 +6719,7 @@ func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 	var issetEnd bool = false
 	var issetAvater bool = false
 	var issetOwner bool = false
+	var issetUid bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -6791,6 +6801,17 @@ func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 7:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField7(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -6832,6 +6853,11 @@ func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetOwner {
 		fieldId = 6
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 7
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -6906,6 +6932,15 @@ func (p *GroupUpdateRequest) ReadField6(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *GroupUpdateRequest) ReadField7(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.Uid = v
+	}
+	return nil
+}
+
 func (p *GroupUpdateRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("GroupUpdateRequest"); err != nil {
@@ -6934,6 +6969,10 @@ func (p *GroupUpdateRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField6(oprot); err != nil {
 			fieldId = 6
+			goto WriteFieldError
+		}
+		if err = p.writeField7(oprot); err != nil {
+			fieldId = 7
 			goto WriteFieldError
 		}
 
@@ -7057,6 +7096,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
 }
 
+func (p *GroupUpdateRequest) writeField7(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 7); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Uid); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 end error: ", p), err)
+}
+
 func (p *GroupUpdateRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -7086,6 +7142,9 @@ func (p *GroupUpdateRequest) DeepEqual(ano *GroupUpdateRequest) bool {
 		return false
 	}
 	if !p.Field6DeepEqual(ano.Owner) {
+		return false
+	}
+	if !p.Field7DeepEqual(ano.Uid) {
 		return false
 	}
 	return true
@@ -7129,6 +7188,13 @@ func (p *GroupUpdateRequest) Field5DeepEqual(src string) bool {
 func (p *GroupUpdateRequest) Field6DeepEqual(src int64) bool {
 
 	if p.Owner != src {
+		return false
+	}
+	return true
+}
+func (p *GroupUpdateRequest) Field7DeepEqual(src int64) bool {
+
+	if p.Uid != src {
 		return false
 	}
 	return true
@@ -7307,7 +7373,8 @@ func (p *UserDelRequest) Field1DeepEqual(src int64) bool {
 }
 
 type GroupDelRequest struct {
-	Id int32 `thrift:"id,1,required" frugal:"1,required,i32" json:"id"`
+	Id  int32 `thrift:"id,1,required" frugal:"1,required,i32" json:"id"`
+	Uid int64 `thrift:"uid,2,required" frugal:"2,required,i64" json:"uid"`
 }
 
 func NewGroupDelRequest() *GroupDelRequest {
@@ -7321,12 +7388,20 @@ func (p *GroupDelRequest) InitDefault() {
 func (p *GroupDelRequest) GetId() (v int32) {
 	return p.Id
 }
+
+func (p *GroupDelRequest) GetUid() (v int64) {
+	return p.Uid
+}
 func (p *GroupDelRequest) SetId(val int32) {
 	p.Id = val
+}
+func (p *GroupDelRequest) SetUid(val int64) {
+	p.Uid = val
 }
 
 var fieldIDToName_GroupDelRequest = map[int16]string{
 	1: "id",
+	2: "uid",
 }
 
 func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -7334,6 +7409,7 @@ func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetId bool = false
+	var issetUid bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -7360,6 +7436,17 @@ func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -7376,6 +7463,11 @@ func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetId {
 		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -7405,6 +7497,15 @@ func (p *GroupDelRequest) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *GroupDelRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.Uid = v
+	}
+	return nil
+}
+
 func (p *GroupDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("GroupDelRequest"); err != nil {
@@ -7413,6 +7514,10 @@ func (p *GroupDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -7451,6 +7556,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
+func (p *GroupDelRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Uid); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
 func (p *GroupDelRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -7467,12 +7589,22 @@ func (p *GroupDelRequest) DeepEqual(ano *GroupDelRequest) bool {
 	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
+	if !p.Field2DeepEqual(ano.Uid) {
+		return false
+	}
 	return true
 }
 
 func (p *GroupDelRequest) Field1DeepEqual(src int32) bool {
 
 	if p.Id != src {
+		return false
+	}
+	return true
+}
+func (p *GroupDelRequest) Field2DeepEqual(src int64) bool {
+
+	if p.Uid != src {
 		return false
 	}
 	return true

@@ -6,7 +6,10 @@ import (
 	"sign-lottery/kitex_gen/sign"
 	"sign-lottery/pkg/errmsg"
 	. "sign-lottery/pkg/log"
+	"sign-lottery/rabbitmq/consumer"
+	model2 "sign-lottery/rabbitmq/model"
 	"strconv"
+	"time"
 )
 
 // GetMonthSign implements the SignServiceImpl interface.
@@ -163,4 +166,36 @@ func (s *SignServiceImpl) GetUserRecord(ctx context.Context, req *sign.GetUserRe
 	resp.Resp.Code = errmsg.Success
 	resp.Resp.Msg = errmsg.GetMsg(errmsg.Success)
 	return
+}
+
+func (s *SignServiceImpl) HandleSuccessSign(ctx context.Context) error {
+	signConsumer := consumer.NewConsumer()
+	signChan := make(chan model2.Record)
+	err := signConsumer.Record.ConsumerRecord(signChan)
+	if err != nil {
+		Log.Errorln("consumer record from rabbitmq err:", err)
+		return err
+	}
+	for signInfo := range signChan {
+		uid := signInfo.Uid
+		gid := signInfo.Gid
+		month := time.Now().Format("2006-01-02")
+		day := time.Now().Day()
+		if !s.cache.Sign.ExistUserMonthRecord(ctx, uid, gid, month) {
+			bitmap, _ := s.dao.Sign.GetMonthSign(ctx, uid, gid, month)
+			s.cache.Sign.StoreUserMonthRecord(ctx, uid, gid, bitmap, month)
+		}
+		err = s.cache.Sign.UpdateUserMonthRecord(ctx, uid, gid, month, day)
+		if err != nil {
+			Log.Errorln("update user month record err:", err)
+			continue
+		}
+		err = s.dao.Record.DoRecord(ctx, uid, gid, month, day)
+		if err != nil {
+			Log.Errorln("store sign to db err:", err)
+			continue
+		}
+	}
+
+	return nil
 }

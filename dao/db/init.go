@@ -19,6 +19,7 @@ type Dao struct {
 	Activity Activity
 	Prize    Prize
 	Order    Order
+	Record   Record
 }
 
 func InitDB() {
@@ -49,5 +50,6 @@ func NewDao() *Dao {
 		Activity: Activity{},
 		Prize:    Prize{},
 		Order:    Order{},
+		Record:   Record{},
 	}
 }

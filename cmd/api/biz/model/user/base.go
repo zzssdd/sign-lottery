@@ -5486,6 +5486,7 @@ type GroupUpdateRequest struct {
 	End    string `thrift:"end,4,required" form:"end,required" json:"end,required" query:"end,required"`
 	Avater string `thrift:"avater,5,required" form:"avater,required" json:"avater,required" query:"avater,required"`
 	Owner  int64  `thrift:"owner,6,required" form:"owner,required" json:"owner,required" query:"owner,required"`
+	UID    int64  `thrift:"uid,7,required" form:"uid,required" json:"uid,required" query:"uid,required"`
 }
 
 func NewGroupUpdateRequest() *GroupUpdateRequest {
@@ -5516,6 +5517,10 @@ func (p *GroupUpdateRequest) GetOwner() (v int64) {
 	return p.Owner
 }
 
+func (p *GroupUpdateRequest) GetUID() (v int64) {
+	return p.UID
+}
+
 var fieldIDToName_GroupUpdateRequest = map[int16]string{
 	1: "id",
 	2: "name",
@@ -5523,6 +5528,7 @@ var fieldIDToName_GroupUpdateRequest = map[int16]string{
 	4: "end",
 	5: "avater",
 	6: "owner",
+	7: "uid",
 }
 
 func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -5535,6 +5541,7 @@ func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 	var issetEnd bool = false
 	var issetAvater bool = false
 	var issetOwner bool = false
+	var issetUID bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -5616,6 +5623,17 @@ func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 7:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField7(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUID = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -5657,6 +5675,11 @@ func (p *GroupUpdateRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetOwner {
 		fieldId = 6
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUID {
+		fieldId = 7
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -5731,6 +5754,15 @@ func (p *GroupUpdateRequest) ReadField6(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *GroupUpdateRequest) ReadField7(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UID = v
+	}
+	return nil
+}
+
 func (p *GroupUpdateRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("GroupUpdateRequest"); err != nil {
@@ -5759,6 +5791,10 @@ func (p *GroupUpdateRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField6(oprot); err != nil {
 			fieldId = 6
+			goto WriteFieldError
+		}
+		if err = p.writeField7(oprot); err != nil {
+			fieldId = 7
 			goto WriteFieldError
 		}
 
@@ -5880,6 +5916,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
+func (p *GroupUpdateRequest) writeField7(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 7); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 end error: ", p), err)
 }
 
 func (p *GroupUpdateRequest) String() string {
@@ -6035,7 +6088,8 @@ func (p *UserDelRequest) String() string {
 }
 
 type GroupDelRequest struct {
-	ID int32 `thrift:"id,1,required" form:"id,required" json:"id,required" query:"id,required"`
+	ID  int32 `thrift:"id,1,required" form:"id,required" json:"id,required" query:"id,required"`
+	UID int64 `thrift:"uid,2,required" form:"uid,required" json:"uid,required" query:"uid,required"`
 }
 
 func NewGroupDelRequest() *GroupDelRequest {
@@ -6046,8 +6100,13 @@ func (p *GroupDelRequest) GetID() (v int32) {
 	return p.ID
 }
 
+func (p *GroupDelRequest) GetUID() (v int64) {
+	return p.UID
+}
+
 var fieldIDToName_GroupDelRequest = map[int16]string{
 	1: "id",
+	2: "uid",
 }
 
 func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -6055,6 +6114,7 @@ func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetID bool = false
+	var issetUID bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -6081,6 +6141,17 @@ func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUID = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -6097,6 +6168,11 @@ func (p *GroupDelRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetID {
 		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUID {
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -6126,6 +6202,15 @@ func (p *GroupDelRequest) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *GroupDelRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UID = v
+	}
+	return nil
+}
+
 func (p *GroupDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("GroupDelRequest"); err != nil {
@@ -6134,6 +6219,10 @@ func (p *GroupDelRequest) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -6170,6 +6259,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GroupDelRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("uid", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
 func (p *GroupDelRequest) String() string {

@@ -17,6 +17,13 @@ func (s *SignServiceImpl) SignPosAdd(ctx context.Context, req *sign.SignPosAddRe
 	name := req.GetName()
 	longtitude := req.GetLongtitude()
 	latitude := req.GetLatitude()
+	uid := req.GetUid()
+	previlege := s.dao.Group.CheckGroupPrevilege(ctx, uid, gid)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
+		return
+	}
 	pos := &model.SignGroupPos{
 		Name:       name,
 		Gid:        int(gid),
@@ -45,7 +52,13 @@ func (s *SignServiceImpl) SignPosAdd(ctx context.Context, req *sign.SignPosAddRe
 func (s *SignServiceImpl) SignPosDel(ctx context.Context, req *sign.SignPosDelRequest) (resp *sign.BaseResponse, err error) {
 	// TODO: Your code here...
 	resp = new(sign.BaseResponse)
-	gid, name := req.GetGid(), req.GetName()
+	uid, gid, name := req.GetUid(), req.GetGid(), req.GetName()
+	previlege := s.dao.Group.CheckGroupPrevilege(ctx, uid, gid)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
+		return
+	}
 	err = s.dao.Sign.SignPosDel(ctx, gid, name)
 	if err != nil {
 		Log.Errorln("delete sign pos from db err:", err)

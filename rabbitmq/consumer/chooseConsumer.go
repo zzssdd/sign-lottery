@@ -35,7 +35,7 @@ func (c *ChooseConsumer) ConsumerChoose(chooseChan chan<- model.Choose) error {
 		err = json.Unmarshal(msg.Body, &chooseInfo)
 		if err != nil {
 			Log.Errorln("unmarshal choose json err:", err)
-			return err
+			continue
 		}
 		chooseChan <- chooseInfo
 		msg.Ack(true)

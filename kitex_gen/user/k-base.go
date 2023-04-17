@@ -5301,6 +5301,7 @@ func (p *GroupUpdateRequest) FastRead(buf []byte) (int, error) {
 	var issetEnd bool = false
 	var issetAvater bool = false
 	var issetOwner bool = false
+	var issetUid bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -5407,6 +5408,21 @@ func (p *GroupUpdateRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 7:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField7(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -5454,6 +5470,11 @@ func (p *GroupUpdateRequest) FastRead(buf []byte) (int, error) {
 
 	if !issetOwner {
 		fieldId = 6
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 7
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -5557,6 +5578,20 @@ func (p *GroupUpdateRequest) FastReadField6(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *GroupUpdateRequest) FastReadField7(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.Uid = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *GroupUpdateRequest) FastWrite(buf []byte) int {
 	return 0
@@ -5568,6 +5603,7 @@ func (p *GroupUpdateRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bi
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField6(buf[offset:], binaryWriter)
+		offset += p.fastWriteField7(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
@@ -5588,6 +5624,7 @@ func (p *GroupUpdateRequest) BLength() int {
 		l += p.field4Length()
 		l += p.field5Length()
 		l += p.field6Length()
+		l += p.field7Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -5648,6 +5685,15 @@ func (p *GroupUpdateRequest) fastWriteField6(buf []byte, binaryWriter bthrift.Bi
 	return offset
 }
 
+func (p *GroupUpdateRequest) fastWriteField7(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "uid", thrift.I64, 7)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.Uid)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *GroupUpdateRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("id", thrift.I32, 1)
@@ -5697,6 +5743,15 @@ func (p *GroupUpdateRequest) field6Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("owner", thrift.I64, 6)
 	l += bthrift.Binary.I64Length(p.Owner)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *GroupUpdateRequest) field7Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("uid", thrift.I64, 7)
+	l += bthrift.Binary.I64Length(p.Uid)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -5847,6 +5902,7 @@ func (p *GroupDelRequest) FastRead(buf []byte) (int, error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetId bool = false
+	var issetUid bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -5878,6 +5934,21 @@ func (p *GroupDelRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField2(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+				issetUid = true
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -5900,6 +5971,11 @@ func (p *GroupDelRequest) FastRead(buf []byte) (int, error) {
 
 	if !issetId {
 		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUid {
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -5933,6 +6009,20 @@ func (p *GroupDelRequest) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *GroupDelRequest) FastReadField2(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.Uid = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *GroupDelRequest) FastWrite(buf []byte) int {
 	return 0
@@ -5943,6 +6033,7 @@ func (p *GroupDelRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Binar
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "GroupDelRequest")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
+		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -5954,6 +6045,7 @@ func (p *GroupDelRequest) BLength() int {
 	l += bthrift.Binary.StructBeginLength("GroupDelRequest")
 	if p != nil {
 		l += p.field1Length()
+		l += p.field2Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -5969,10 +6061,28 @@ func (p *GroupDelRequest) fastWriteField1(buf []byte, binaryWriter bthrift.Binar
 	return offset
 }
 
+func (p *GroupDelRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "uid", thrift.I64, 2)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.Uid)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *GroupDelRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("id", thrift.I32, 1)
 	l += bthrift.Binary.I32Length(p.Id)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *GroupDelRequest) field2Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("uid", thrift.I64, 2)
+	l += bthrift.Binary.I64Length(p.Uid)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

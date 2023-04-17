@@ -7,13 +7,14 @@ import (
 	"sign-lottery/rabbitmq/model"
 )
 
-type SignConsumer struct{}
+type RecordConsumer struct {
+}
 
-func (s *SignConsumer) ConsumerSign(signChan chan<- model.Sign) error {
-	rabbit := comm.NewRabbit("sign", "sign-lottery", "sign")
+func (r *RecordConsumer) ConsumerRecord(recordChan chan<- model.Record) error {
+	rabbit := comm.NewRabbit("record", "sign-lottery", "record")
 	err := rabbit.SetUp()
 	if err != nil {
-		Log.Errorln("rabbitmq set up err:", err)
+		Log.Errorln("set up record rabbitmq err:", err)
 		return err
 	}
 	defer rabbit.Destory()
@@ -30,14 +31,14 @@ func (s *SignConsumer) ConsumerSign(signChan chan<- model.Sign) error {
 		Log.Errorln("get msg from rabbit err:", err)
 		return err
 	}
-	var signInfo model.Sign
+	var record model.Record
 	for msg := range msgChan {
-		err = json.Unmarshal(msg.Body, &signInfo)
+		err = json.Unmarshal(msg.Body, &record)
 		if err != nil {
-			Log.Errorln("unmarshal sign json err:", err)
+			Log.Errorln("unmarshal record json err:", err)
 			continue
 		}
-		signChan <- signInfo
+		recordChan <- record
 		msg.Ack(true)
 		rabbit.Ch.Ack(msg.DeliveryTag, false)
 	}

@@ -21,6 +21,13 @@ func GetMonthSign(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = &id
 	var rpcReq *sign2.GetMonthSignRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -94,6 +101,13 @@ func GetUserRecord(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = &id
 	var rpcReq *sign2.GetUserRecordRequest
 
 	err = common.BindRpcOption(req, rpcReq)

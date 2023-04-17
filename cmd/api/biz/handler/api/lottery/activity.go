@@ -21,6 +21,13 @@ func ActivityAdd(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = &id
 	var rpcReq *lottery2.ActivityAddRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -45,6 +52,13 @@ func ActivityDel(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = id
 	var rpcReq *lottery2.ActivityDelRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -69,6 +83,13 @@ func ActivityUpdate(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = id
 	var rpcReq *lottery2.ActivityUpdateRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {

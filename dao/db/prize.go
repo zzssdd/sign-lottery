@@ -26,6 +26,12 @@ func (p *Prize) PrizeAdd(ctx context.Context, prize *model.Prize) error {
 	return nil
 }
 
+func (p *Prize) GetPrizeAid(ctx context.Context, id int32) (int32, error) {
+	var aid int32
+	err := db.WithContext(ctx).Select("aid").Where("id=?", id).First(&aid).Error
+	return aid, err
+}
+
 func (p *Prize) PrizeDel(ctx context.Context, id int32) error {
 	var prize *model.Prize
 	tx := db.Begin()

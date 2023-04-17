@@ -142,6 +142,13 @@ func (s *BaseServiceImpl) GroupUpdate(ctx context.Context, req *user.GroupUpdate
 	end, _ := time.Parse("2006-01-02 15:04:05", req.GetEnd())
 	avater := req.GetAvater()
 	owner := req.GetOwner()
+	uid := req.GetUid()
+	previlege := s.dao.Group.CheckGroupPrevilege(ctx, uid, id)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
+		return nil, err
+	}
 	group := &model.SignGroup{
 		ID:     int(id),
 		Name:   name,
@@ -174,11 +181,18 @@ func (s *BaseServiceImpl) GroupUpdate(ctx context.Context, req *user.GroupUpdate
 func (s *BaseServiceImpl) GroupDel(ctx context.Context, req *user.GroupDelRequest) (resp *user.BaseResponse, err error) {
 	resp = new(user.BaseResponse)
 	id := req.GetId()
+	uid := req.GetUid()
 	err = s.dao.Group.GroupDel(ctx, id)
 	if err != nil {
 		Log.Errorln("delete from db err:", err)
 		resp.Code = errmsg.Error
 		resp.Msg = errmsg.GetMsg(errmsg.Error)
+		return nil, err
+	}
+	previlege := s.dao.Group.CheckGroupPrevilege(ctx, uid, id)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
 		return nil, err
 	}
 	if s.cache.Group.GroupInfoExist(ctx, id) {

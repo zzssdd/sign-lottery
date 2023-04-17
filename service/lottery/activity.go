@@ -50,6 +50,13 @@ func (s *LotteryServiceImpl) ActivityDel(ctx context.Context, req *lottery.Activ
 	//TODO implement me
 	resp = new(lottery.BaseResponse)
 	id := req.GetId()
+	uid := req.GetUid()
+	previlege := s.dao.Activity.CheckActivityPrevilege(ctx, uid, id)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
+		return
+	}
 	err = s.dao.Activity.ActivityDel(ctx, id)
 	if err != nil {
 		Log.Errorln("delete activity from db err:", err)
@@ -84,6 +91,12 @@ func (s *LotteryServiceImpl) ActivityUpdate(ctx context.Context, req *lottery.Ac
 	gid := int(req.GetGid())
 	start, _ := time.Parse("2006-01-02 15:04:05", req.GetStart())
 	end, _ := time.Parse("2006-01-02 15:04:05", req.GetEnd())
+	previlege := s.dao.Activity.CheckActivityPrevilege(ctx, uid, id)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
+		return
+	}
 	activity := &model.Activity{
 		Name:    name,
 		Picture: &picture,

@@ -117,13 +117,21 @@ func (a *Activity) IncrActivityNum(ctx context.Context, id int32, base int64) er
 	return cli.HIncrBy(ctx, ActivityInfoTag(id), "num", base).Err()
 }
 
-func (a *Activity) CheckActivity(ctx context.Context, id int32, t time.Time) bool {
+func (a *Activity) CheckActivityNum(ctx context.Context, id int32) bool {
 	result, err := cli.HGetAll(ctx, ActivityInfoTag(id)).Result()
 	if err != nil {
 		return false
 	}
 	num, err := strconv.Atoi(result["num"])
 	if num <= 0 && err != nil {
+		return false
+	}
+	return true
+}
+
+func (a *Activity) CheckActivityTime(ctx context.Context, id int32, t time.Time) bool {
+	result, err := cli.HGetAll(ctx, ActivityInfoTag(id)).Result()
+	if err != nil {
 		return false
 	}
 	start, err := time.Parse("2006-01-02 15:04:05", result["start"])
@@ -134,8 +142,5 @@ func (a *Activity) CheckActivity(ctx context.Context, id int32, t time.Time) boo
 	if err != nil {
 		return false
 	}
-	if t.Before(start) || t.After(end) {
-		return false
-	}
-	return true
+	return !(t.Before(start) || t.After(end))
 }

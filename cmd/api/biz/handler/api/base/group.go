@@ -21,6 +21,12 @@ func CreateGroup(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	req.Owner = value.(int64)
 	var rpcReq *base2.CreateGroupRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -43,6 +49,13 @@ func JoinGroup(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = &id
 	var rpcReq *base2.JoinGroupRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -109,6 +122,12 @@ func GroupUpdate(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	req.UID = value.(int64)
 	var rpcReq *base2.GroupUpdateRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -129,6 +148,12 @@ func GroupDel(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	req.UID = value.(int64)
 	var rpcReq *base2.GroupDelRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {

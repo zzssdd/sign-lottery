@@ -26,12 +26,18 @@ func Sign(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
 	signInfo := &model2.Sign{
-		Uid:        *req.UID,
+		Uid:        id,
 		Gid:        req.Gid,
 		Latitude:   req.Latitude,
 		Longtitude: req.Longtitude,
-		Ip:         *req.IP,
+		Ip:         c.ClientIP(),
 	}
 	err = producer.NewProcuer().Sign.ProducerSign(signInfo)
 	if err != nil {
@@ -70,6 +76,13 @@ func AskLeave(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.UID = &id
 	var rpcReq *sign2.AskLeaveRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {

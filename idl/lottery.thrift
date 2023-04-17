@@ -52,6 +52,7 @@ struct ActivityUpdateRequest{
 
 struct ActivityDelRequest{
     1:required i32 id
+    2:required i64 uid
 }
 
 struct GetActivityByGidRequest{
@@ -89,6 +90,7 @@ struct PrizeAddRequest{
 
 struct PrizeDelRequest{
     1:required i32 id
+    2:required i64 uid
 }
 
 struct PrizeUpdateRequest{
@@ -97,6 +99,7 @@ struct PrizeUpdateRequest{
     3:required i64 num
     4:required string picture
     5:required i32 aid
+    6:required i64 uid
 }
 
 struct GetPrizeByAidRequest{

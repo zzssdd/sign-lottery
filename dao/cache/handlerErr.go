@@ -55,6 +55,10 @@ func (r *HandlerErr) GetEmailErr(ctx context.Context, email string) (int, error)
 	if err != nil {
 		return 0, err
 	}
+	err = cli.Del(ctx, EmailErrTag(email)).Err()
+	if err != nil {
+		return 0, err
+	}
 	return strconv.Atoi(result)
 }
 
@@ -63,8 +67,20 @@ func (r *HandlerErr) GetSignErr(ctx context.Context, uid int64, gid int32) (int,
 	if err != nil {
 		return 0, err
 	}
+	err = cli.Del(ctx, SignErrTag(uid, gid)).Err()
+	if err != nil {
+		return 0, err
+	}
 	return strconv.Atoi(result)
 }
 func (r *HandlerErr) GetChooseErr(ctx context.Context, uid int64, aid int32) (string, error) {
-	return cli.Get(ctx, ChooseErrTag(uid, aid)).Result()
+	result, err := cli.Get(ctx, ChooseErrTag(uid, aid)).Result()
+	if err != nil {
+		return "", err
+	}
+	err = cli.Del(ctx, ChooseErrTag(uid, aid)).Err()
+	if err != nil {
+		return "", err
+	}
+	return result, nil
 }

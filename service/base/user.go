@@ -32,7 +32,7 @@ func (s *BaseServiceImpl) SendEmail(ctx context.Context) (resp *user.BaseRespons
 			}
 		} else if err = utils.SendEmail(email, code); err != nil {
 			Log.Errorln("send email err:", err)
-			err2 := s.cache.HandlerErr.ReturnEmailErr(ctx, email, errmsg.Error)
+			err2 := s.cache.HandlerErr.ReturnEmailErr(ctx, email, errmsg.SendEmailFailed)
 			if err2 != nil {
 				Log.Errorln("store send email code err:", err)
 			}

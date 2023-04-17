@@ -51,28 +51,44 @@ func (r *RabbitMQ) SetUp() error {
 	return nil
 }
 
+func (r *RabbitMQ) RegularSetUp() error {
+	q, err := r.Ch.QueueDeclare(r.QueueName, true, false, false, false, nil)
+	if err != nil {
+		Log.Errorln("create regular queue err:", err)
+		return err
+	}
+	err = r.Ch.ExchangeDeclare(r.ExchangeName, "x-delayed-message", true, false, false, false, amqp.Table{
+		"x-delayed-type": amqp.ExchangeDirect,
+	})
+	if err != nil {
+		Log.Errorln("create regular exchange err:", err)
+		return err
+	}
+	err = r.Ch.QueueBind(q.Name, r.Key, r.ExchangeName, false, nil)
+	if err != nil {
+		Log.Errorln("bind regular queue err:", err)
+		return err
+	}
+	return nil
+}
+
+func (r *RabbitMQ) RegularSend(data []byte, timeStamp string) error {
+	msg := amqp.Publishing{
+		ContentType: "text/plain",
+		Body:        data,
+		Headers: map[string]interface{}{
+			"x-delay": timeStamp,
+		},
+	}
+	return r.Ch.Publish(r.ExchangeName, r.Key, false, false, msg)
+}
+
 func (r *RabbitMQ) Send(data []byte) error {
 	msg := amqp.Publishing{
 		ContentType: "text/plain",
 		Body:        data,
 	}
 	return r.Ch.Publish(r.ExchangeName, r.Key, false, false, msg)
-}
-
-func (r *RabbitMQ) Get() (<-chan amqp.Delivery, error) {
-	msgChan, err := r.Ch.Consume(
-		r.QueueName,
-		"",
-		false,
-		false,
-		false,
-		false,
-		nil,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return msgChan, nil
 }
 
 func (r *RabbitMQ) Destory() {

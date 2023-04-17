@@ -45,7 +45,7 @@ func (s *LotteryServiceImpl) Choose(ctx context.Context) (resp *lottery.ChooseRe
 			if err != nil {
 				Log.Errorln("incr activity num err:", err)
 			}
-			err = s.cache.HandlerErr.ReturnChooseErr(ctx, uid, aid, errmsg.Error)
+			err = s.cache.HandlerErr.ReturnChooseErr(ctx, uid, aid, "")
 			if err != nil {
 				Log.Errorln("store return choose code err:", err)
 				err := s.cache.Activity.IncrActivityNum(ctx, aid, 1)
@@ -65,7 +65,7 @@ func (s *LotteryServiceImpl) Choose(ctx context.Context) (resp *lottery.ChooseRe
 			if rand_num <= 0 {
 				err = s.cache.Prize.IncrPrize(ctx, int32(v.ID))
 				if err != nil {
-					err = s.cache.HandlerErr.ReturnChooseErr(ctx, uid, aid, errmsg.ChooseNoPrize)
+					err = s.cache.HandlerErr.ReturnChooseErr(ctx, uid, aid, v.Name)
 					if err != nil {
 						Log.Errorln("store return choose code err:", err)
 					}

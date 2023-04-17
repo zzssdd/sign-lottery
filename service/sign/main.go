@@ -34,6 +34,7 @@ func SignServer() {
 	go func() {
 		for {
 			signServer.Sign(context.Background())
+			signServer.HandleSuccessSign(context.Background())
 		}
 	}()
 	if err != nil {

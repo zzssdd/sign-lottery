@@ -44,6 +44,20 @@ func (s *LotteryServiceImpl) PrizeDel(ctx context.Context, req *lottery.PrizeDel
 	// TODO: Your code here...
 	resp = new(lottery.BaseResponse)
 	id := req.GetId()
+	uid := req.GetUid()
+	aid, err := s.dao.Prize.GetPrizeAid(ctx, id)
+	if err != nil {
+		Log.Errorln("get prize aid from db err:", err)
+		resp.Code = errmsg.Error
+		resp.Msg = errmsg.GetMsg(errmsg.Error)
+		return
+	}
+	previlege := s.dao.Activity.CheckActivityPrevilege(ctx, uid, aid)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
+		return
+	}
 	err = s.dao.Prize.PrizeDel(ctx, id)
 	if err != nil {
 		Log.Errorln("delete prize from db err:", err)
@@ -75,6 +89,13 @@ func (s *LotteryServiceImpl) PrizeUpdate(ctx context.Context, req *lottery.Prize
 	num := req.GetNum()
 	picture := req.GetPicture()
 	aid := req.GetAid()
+	uid := req.GetUid()
+	previlege := s.dao.Activity.CheckActivityPrevilege(ctx, uid, aid)
+	if !previlege {
+		resp.Code = errmsg.NoPreviledge
+		resp.Msg = errmsg.GetMsg(errmsg.NoPreviledge)
+		return
+	}
 	prize := &model.Prize{
 		ID:      int(id),
 		Name:    name,

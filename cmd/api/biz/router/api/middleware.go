@@ -4,11 +4,14 @@ package api
 
 import (
 	"github.com/cloudwego/hertz/pkg/app"
+	"sign-lottery/cmd/api/biz/middleware"
 )
 
 func rootMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.IpLimitMiddleware(),
+	}
 }
 
 func _activityMw() []app.HandlerFunc {
@@ -18,7 +21,9 @@ func _activityMw() []app.HandlerFunc {
 
 func _addMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func __ctivity_ddMw() []app.HandlerFunc {
@@ -28,7 +33,9 @@ func __ctivity_ddMw() []app.HandlerFunc {
 
 func _delMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func __ctivitydelMw() []app.HandlerFunc {
@@ -38,7 +45,9 @@ func __ctivitydelMw() []app.HandlerFunc {
 
 func _gidMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _get_ctivitybygidMw() []app.HandlerFunc {
@@ -53,12 +62,16 @@ func _idMw() []app.HandlerFunc {
 
 func _get_ctivitybyidMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AdminJwtMiddleware(),
+	}
 }
 
 func _listMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AdminJwtMiddleware(),
+	}
 }
 
 func _get_ll_ctivityMw() []app.HandlerFunc {
@@ -68,7 +81,9 @@ func _get_ll_ctivityMw() []app.HandlerFunc {
 
 func _updateMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func __ctivityupdateMw() []app.HandlerFunc {
@@ -98,7 +113,9 @@ func _userMw() []app.HandlerFunc {
 
 func _userdelMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AdminJwtMiddleware(),
+	}
 }
 
 func _userlistMw() []app.HandlerFunc {
@@ -108,7 +125,9 @@ func _userlistMw() []app.HandlerFunc {
 
 func _get_lluserMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AdminJwtMiddleware(),
+	}
 }
 
 func _groupMw() []app.HandlerFunc {
@@ -118,7 +137,9 @@ func _groupMw() []app.HandlerFunc {
 
 func _add0Mw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _creategroupMw() []app.HandlerFunc {
@@ -128,7 +149,9 @@ func _creategroupMw() []app.HandlerFunc {
 
 func _del0Mw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _groupdelMw() []app.HandlerFunc {
@@ -138,17 +161,23 @@ func _groupdelMw() []app.HandlerFunc {
 
 func _id0Mw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _getgroupbyidMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _joinMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _joingroupMw() []app.HandlerFunc {
@@ -158,7 +187,9 @@ func _joingroupMw() []app.HandlerFunc {
 
 func _list0Mw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AdminJwtMiddleware(),
+	}
 }
 
 func _get_llgroupMw() []app.HandlerFunc {
@@ -168,7 +199,9 @@ func _get_llgroupMw() []app.HandlerFunc {
 
 func _putMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _groupupdateMw() []app.HandlerFunc {
@@ -178,7 +211,9 @@ func _groupupdateMw() []app.HandlerFunc {
 
 func _orderMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _list1Mw() []app.HandlerFunc {
@@ -188,7 +223,9 @@ func _list1Mw() []app.HandlerFunc {
 
 func _get_llorderMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _uidMw() []app.HandlerFunc {
@@ -218,7 +255,9 @@ func _prize_ddMw() []app.HandlerFunc {
 
 func _aidMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _getprizeby_idMw() []app.HandlerFunc {
@@ -228,7 +267,9 @@ func _getprizeby_idMw() []app.HandlerFunc {
 
 func _chooseMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _choose0Mw() []app.HandlerFunc {
@@ -238,7 +279,9 @@ func _choose0Mw() []app.HandlerFunc {
 
 func _del1Mw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _prizedelMw() []app.HandlerFunc {
@@ -248,7 +291,9 @@ func _prizedelMw() []app.HandlerFunc {
 
 func _id1Mw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _getprizebyidMw() []app.HandlerFunc {
@@ -258,7 +303,9 @@ func _getprizebyidMw() []app.HandlerFunc {
 
 func _update0Mw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _prizeupdateMw() []app.HandlerFunc {
@@ -268,7 +315,9 @@ func _prizeupdateMw() []app.HandlerFunc {
 
 func _signMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _getmonthsignbygidMw() []app.HandlerFunc {
@@ -353,7 +402,9 @@ func _user0Mw() []app.HandlerFunc {
 
 func _addressMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _changeuser_ddressMw() []app.HandlerFunc {
@@ -363,7 +414,9 @@ func _changeuser_ddressMw() []app.HandlerFunc {
 
 func _avaterMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _changeuser_vaterMw() []app.HandlerFunc {
@@ -418,7 +471,9 @@ func _passwordMw() []app.HandlerFunc {
 
 func _changeuserpasswordMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.UserJwtMiddleware(),
+	}
 }
 
 func _registeMw() []app.HandlerFunc {

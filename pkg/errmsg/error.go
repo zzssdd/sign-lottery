@@ -20,10 +20,15 @@ const (
 	SignIpUsed    = 402
 	SignNotInTime = 403
 
-	Error = 500
+	Error         = 500
+	TokenNotExist = 501
+	TokenIsError  = 502
 
-	ChooseNoPrize = 600
-	PrizeIsNull   = 601
+	ChooseNoPrize     = 600
+	PrizeIsNull       = 601
+	NotInActivityTime = 602
+
+	NoPreviledge = 700
 )
 
 var codeMsg = map[int]string{
@@ -47,9 +52,14 @@ var codeMsg = map[int]string{
 	403: "不在签到时间段内",
 
 	500: "错误",
+	501: "请先登陆",
+	502: "token格式错误",
 
 	600: "很遗憾，您未中奖",
 	601: "您来晚了，活动奖品已被抽完",
+	602: "对不起，不在活动时间内",
+
+	700: "对不起，您没有权限进行此操作",
 }
 
 func GetMsg(code int) string {

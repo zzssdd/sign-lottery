@@ -151,6 +151,13 @@ func ChangeUserAvater(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.ID = &id
 	var rpcReq *base2.ChangeUserAvaterRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -173,6 +180,13 @@ func ChangeUserPassword(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.ID = &id
 	var rpcReq *base2.ChangePasswordRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {
@@ -195,6 +209,13 @@ func ChangeUserAddress(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	value, exists := c.Get("id")
+	if !exists {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	id := value.(int64)
+	req.ID = &id
 	var rpcReq *base2.ChangeAddressRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {

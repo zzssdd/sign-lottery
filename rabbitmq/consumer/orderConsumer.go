@@ -36,7 +36,7 @@ func (o *OrderConsumer) ProducerOrder(orderChan chan<- model.Order) error {
 		err = json.Unmarshal(msg.Body, &orderInfo)
 		if err != nil {
 			Log.Errorln("unmarshal order json err:", err)
-			return err
+			continue
 		}
 		orderChan <- orderInfo
 		msg.Ack(true)

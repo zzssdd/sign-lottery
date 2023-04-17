@@ -21,4 +21,5 @@ const (
 	SmtpAuthKey        = "afhncxjpsukidgif"
 	SmtpFromEmail      = "1654622146@qq.com"
 	SignDist           = 1
+	IpLimitCount       = 1000
 )
