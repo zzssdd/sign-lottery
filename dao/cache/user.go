@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"sign-lottery/dao/db/model"
+	"sign-lottery/pkg/constants"
 	"strconv"
 	"time"
 )
@@ -14,6 +15,7 @@ const (
 	UserPreffix  = "user:"
 	LoginPreffix = "login:"
 	EmailPreffix = "email:"
+	TokenPreffix = "token:"
 )
 
 func UserInfoTag(id int64) string {
@@ -27,6 +29,10 @@ func LoginTag(email string) string {
 
 func EmailTag(email string) string {
 	return EmailPreffix + email
+}
+
+func TokenTag(token string) string {
+	return TokenPreffix + token
 }
 
 func (u *User) StoreCode(ctx context.Context, email string, code string) error {
@@ -152,4 +158,17 @@ func (u *User) StoreLoginInfo(ctx context.Context, id int64, email string, passw
 
 func (u *User) ClearLoginInfo(ctx context.Context, email string) error {
 	return cli.Del(ctx, LoginTag(email)).Err()
+}
+
+func (u *User) StoreToken(ctx context.Context, token string, newToken string) error {
+	return cli.Set(ctx, TokenTag(token), newToken, 2*constants.TokenExpireTime*time.Hour).Err()
+}
+
+func (u *User) ExistToken(ctx context.Context, token string) bool {
+	result, err := cli.Exists(ctx, TokenTag(token)).Result()
+	return result == 1 && err == nil
+}
+
+func (u *User) GetToken(ctx context.Context, token string) (string, error) {
+	return cli.Get(ctx, TokenTag(token)).Result()
 }

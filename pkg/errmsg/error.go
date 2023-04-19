@@ -23,6 +23,7 @@ const (
 	Error         = 500
 	TokenNotExist = 501
 	TokenIsError  = 502
+	TokenExpired  = 503
 
 	ChooseNoPrize     = 600
 	PrizeIsNull       = 601
@@ -53,7 +54,8 @@ var codeMsg = map[int]string{
 
 	500: "错误",
 	501: "请先登陆",
-	502: "token格式错误",
+	502: "非法登陆",
+	503: "请重新登陆",
 
 	600: "很遗憾，您未中奖",
 	601: "您来晚了，活动奖品已被抽完",

@@ -20,11 +20,11 @@ func EmailErrTag(email string) string {
 }
 
 func SignErrTag(uid int64, gid int32) string {
-	return SignErrPreffix + strconv.FormatInt(uid, 10) + strconv.Itoa(int(gid))
+	return SignErrPreffix + strconv.FormatInt(uid, 10) + ":" + strconv.Itoa(int(gid))
 }
 
 func ChooseErrTag(uid int64, gid int32) string {
-	return ChooseErrPreffix + strconv.FormatInt(uid, 10) + strconv.Itoa(int(gid))
+	return ChooseErrPreffix + strconv.FormatInt(uid, 10) + ":" + strconv.Itoa(int(gid))
 }
 
 func (r *HandlerErr) ExistEmailErr(ctx context.Context, email string) bool {

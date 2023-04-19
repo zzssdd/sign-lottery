@@ -22,6 +22,16 @@ func (s *BaseServiceImpl) AdminLogin(ctx context.Context, req *user.AdminLoginRe
 	resp.Token, err = jwt.GenAdminToken(name)
 	if err != nil {
 		Log.Errorln("get admin token err:", err)
+		resp.Resp.Code = errmsg.Error
+		resp.Resp.Msg = errmsg.GetMsg(errmsg.Error)
+		return nil, err
+	}
+	err = s.cache.User.StoreToken(ctx, resp.Token, resp.Token)
+	if err != nil {
+		Log.Errorln("store admin token into cache err:", err)
+		resp.Resp.Code = errmsg.Error
+		resp.Resp.Msg = errmsg.GetMsg(errmsg.Error)
+		return nil, err
 	}
 	resp.Resp.Code = errmsg.Success
 	resp.Resp.Msg = errmsg.GetMsg(errmsg.Success)

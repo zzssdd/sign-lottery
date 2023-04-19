@@ -148,6 +148,13 @@ func (s *BaseServiceImpl) Login(ctx context.Context, req *user.LoginRequest) (re
 		resp.Resp.Msg = errmsg.GetMsg(errmsg.Error)
 		return nil, err
 	}
+	err = s.cache.User.StoreToken(ctx, resp.Token, resp.Token)
+	if err != nil {
+		Log.Errorln("store token into cache err:", err)
+		resp.Resp.Code = errmsg.Error
+		resp.Resp.Msg = errmsg.GetMsg(errmsg.Error)
+		return nil, err
+	}
 	resp.Resp.Code = errmsg.Success
 	resp.Resp.Msg = errmsg.GetMsg(errmsg.Success)
 	return

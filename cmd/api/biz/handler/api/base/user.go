@@ -12,6 +12,7 @@ import (
 	"sign-lottery/pkg/errmsg"
 	. "sign-lottery/pkg/log"
 	"sign-lottery/rabbitmq/producer"
+	"sign-lottery/utils"
 	"time"
 )
 
@@ -62,6 +63,7 @@ func Registe(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	req.Password = utils.Crypto(req.Password)
 	var rpcReq *base2.RegisterRequest
 	err = common.BindRpcOption(rpcReq, req)
 	if err != nil {
@@ -85,6 +87,7 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	req.Password = utils.Crypto(req.Password)
 	var rpcReq *base2.LoginRequest
 	common.BindRpcOption(req, rpcReq)
 	resp, err := base.BaseClient.Login(ctx, rpcReq)

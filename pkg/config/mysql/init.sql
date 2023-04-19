@@ -9,7 +9,7 @@ CREATE TABLE user(
                      password VARCHAR(100) NOT NULL,
                      avater VARCHAR(50) DEFAULT NULL,
                      address VARCHAR(50) DEFAULT NULL,
-                     UNIQUE(email,created_at,deleted_at),
+                     UNIQUE(email,deleted_at),
                      KEY key_deleted(deleted_at)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -70,7 +70,7 @@ CREATE TABLE sign_record(
                             uid BIGINT UNSIGNED NOT NULL,
                             KEY key_deleted(deleted_at),
                             KEY key_gid(gid),
-                            UNIQUE (uid,gid,created_at)
+                            UNIQUE (uid,gid,deleted_at)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE  IF EXISTS sign_group_pos;

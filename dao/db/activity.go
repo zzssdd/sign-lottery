@@ -13,7 +13,17 @@ func (a *Activity) ActivityAdd(ctx context.Context, activity *model.Activity) (e
 }
 
 func (a *Activity) ActivityDel(ctx context.Context, id int32) error {
-	return db.WithContext(ctx).Delete(&model.Activity{}, id).Error
+	tx := db.Begin()
+	err := tx.WithContext(ctx).Delete(&model.Activity{}, id).Error
+	if err != nil {
+		return err
+	}
+	err = tx.WithContext(ctx).Where("aid=?", id).Delete(&model.Prize{}).Error
+	if err != nil {
+		return err
+	}
+	tx.Commit()
+	return nil
 }
 
 func (a *Activity) CheckActivityPrevilege(ctx context.Context, uid int64, aid int32) bool {

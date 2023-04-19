@@ -60,13 +60,13 @@ func (s *Sign) UpdateMonthSign(ctx context.Context, uid int64, gid int32, month 
 	var err error
 	var count int64
 	tx := db.Begin()
-	err = tx.WithContext(ctx).Model(&model.SignMonth{}).Where("uid=? AND gid=? AND month=?", uid, gid, month).Count(&count).Error
+	err = tx.WithContext(ctx).Model(&model.SignMonth{}).Where("uid=? AND month=? AND gid=?", uid, gid, month).Count(&count).Error
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 	if count > 0 {
-		err = tx.WithContext(ctx).Model(&model.SignMonth{}).Where("uid=? AND gid=? AND month=?", uid, gid, month).Update("bitmap", bitmap).Error
+		err = tx.WithContext(ctx).Model(&model.SignMonth{}).Where("uid=? AND month=? AND gid=?", uid, gid, month).Update("bitmap", bitmap).Error
 		if err != nil {
 			tx.Rollback()
 			return err
@@ -88,7 +88,7 @@ func (s *Sign) UpdateMonthSign(ctx context.Context, uid int64, gid int32, month 
 }
 
 func (s *Sign) GetMonthSign(ctx context.Context, uid int64, gid int32, month string) (bitmap int, err error) {
-	err = db.WithContext(ctx).Select("bit_sign").Where("uid=? AND gid=? AND month=?", uid, gid, month).First(&bitmap).Error
+	err = db.WithContext(ctx).Select("bit_sign").Where("uid=? AND month=? AND gid=?", uid, gid, month).First(&bitmap).Error
 	return
 }
 

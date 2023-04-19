@@ -20,7 +20,7 @@ func (i *IpLimit) IncrIpCount(ctx context.Context, ip string) error {
 	if err != nil {
 		return err
 	}
-	return cli.Expire(ctx, IpLimitTag(ip), 10*time.Minute).Err()
+	return cli.Expire(ctx, IpLimitTag(ip), 2*time.Minute).Err()
 }
 
 func (i *IpLimit) GetIpCount(ctx context.Context, ip string) (int, error) {

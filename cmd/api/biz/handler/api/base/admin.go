@@ -9,6 +9,7 @@ import (
 	"sign-lottery/cmd/rpc/base"
 	base2 "sign-lottery/kitex_gen/user"
 	. "sign-lottery/pkg/log"
+	"sign-lottery/utils"
 )
 
 // AdminLogin .
@@ -21,6 +22,7 @@ func AdminLogin(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	req.Password = utils.Crypto(req.Password)
 	var rpcReq *base2.AdminLoginRequest
 	err = common.BindRpcOption(req, rpcReq)
 	if err != nil {

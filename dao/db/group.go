@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"gorm.io/gorm/clause"
 	"sign-lottery/dao/db/model"
 
 	"gorm.io/gorm"
@@ -39,7 +40,23 @@ func (g *Group) CheckGroupPrevilege(ctx context.Context, uid int64, gid int32) b
 }
 
 func (g *Group) GroupDel(ctx context.Context, id int32) error {
-	return db.WithContext(ctx).Delete(&model.SignGroup{}, id).Error
+	var activity []*model.Activity
+	tx := db.Begin()
+	err := db.WithContext(ctx).Delete(&model.SignGroup{}, id).Error
+	if err != nil {
+		return err
+	}
+	err = db.WithContext(ctx).Clauses(clause.Returning{}).Where("gid=?", id).Delete(&activity).Error
+	if err != nil {
+		return err
+	}
+	for _, v := range activity {
+		err = db.WithContext(ctx).Where("aid=?", v.ID).Delete(&model.Prize{}).Error
+		if err != nil {
+			return err
+		}
+	}
+	tx.Commit()
 }
 
 func (g *Group) JoinGroup(ctx context.Context, uid int64, gid int32) error {

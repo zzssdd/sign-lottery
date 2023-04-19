@@ -1,7 +1,10 @@
 package jwt
 
 import (
+	"errors"
 	"fmt"
+	"sign-lottery/pkg/constants"
+	"sign-lottery/pkg/errmsg"
 	. "sign-lottery/pkg/log"
 	"time"
 
@@ -27,7 +30,7 @@ func GenToken(id int64, email string) (token string, err error) {
 		Id:    id,
 		Email: email,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(2 * time.Hour).Unix(),
+			ExpiresAt: time.Now().Add(constants.TokenExpireTime * time.Hour).Unix(),
 			Issuer:    "yogen",
 			Subject:   "sign-lottery",
 		},
@@ -43,7 +46,7 @@ func GenAdminToken(name string) (token string, err error) {
 	claim := &AdminClaims{
 		Name: name,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(2 * time.Hour).Unix(),
+			ExpiresAt: time.Now().Add(constants.TokenExpireTime * time.Hour).Unix(),
 			Issuer:    "yogen-admin",
 			Subject:   "sign-lottery",
 		},
@@ -59,7 +62,13 @@ func ParseUserToken(tokenString string) (*MyClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return Secret, nil
 	})
-	if err != nil || token == nil {
+	if err != nil {
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			err = fmt.Errorf(errmsg.GetMsg(errmsg.TokenExpired))
+		}
+		return nil, err
+	}
+	if token == nil {
 		return nil, err
 	}
 	if claim, ok := token.Claims.(*MyClaims); ok && token.Valid {
@@ -68,11 +77,39 @@ func ParseUserToken(tokenString string) (*MyClaims, error) {
 	return nil, fmt.Errorf("token不合法")
 }
 
+func GenNewUserToken(tokenString string) (string, error) {
+	var claim MyClaims
+	_, err := jwt.ParseWithClaims(tokenString, &claim, func(token *jwt.Token) (interface{}, error) {
+		return Secret, nil
+	})
+	if err != nil {
+		return "", err
+	}
+	return GenToken(claim.Id, claim.Email)
+}
+
+func GenNewAdminToken(tokenString string) (string, error) {
+	var claim AdminClaims
+	_, err := jwt.ParseWithClaims(tokenString, &claim, func(token *jwt.Token) (interface{}, error) {
+		return AdminSecret, nil
+	})
+	if err != nil {
+		return "", err
+	}
+	return GenAdminToken(claim.Name)
+}
+
 func ParseAdminToken(tokenString string) (*AdminClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return AdminSecret, nil
 	})
-	if err != nil || token == nil {
+	if err != nil {
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			err = fmt.Errorf(errmsg.GetMsg(errmsg.TokenExpired))
+		}
+		return nil, err
+	}
+	if token == nil {
 		return nil, err
 	}
 	if claim, ok := token.Claims.(*AdminClaims); ok && token.Valid {
