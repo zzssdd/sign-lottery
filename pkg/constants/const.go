@@ -18,7 +18,7 @@ const (
 	Mode               = "debug"
 	SmtpAddr           = "smtp.qq.com"
 	SmtpPort           = ":587"
-	SmtpAuthKey        = "afhncxjpsukidgif"
+	SmtpAuthKey        = "*******"
 	SmtpFromEmail      = "1654622146@qq.com"
 	SignDist           = 1
 	IpLimitCount       = 1000
